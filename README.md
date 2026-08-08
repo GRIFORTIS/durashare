@@ -151,7 +151,7 @@ Reference implementations may lag the current specification. Treat each reposito
 
 **Renato Schiavinato Lopez** — Founder & Protocol Author · [LinkedIn](https://www.linkedin.com/in/renato-agile-coach/) · [GitHub](https://github.com/renatoslopes)
 
-**Jeroen van de Graaf** — Chief Scientist; Advisory Board · Professor, DCC–UFMG · [Google Scholar](https://scholar.google.com/citations?user=-w8olWwAAAAJ) · [UFMG / T-REX](https://trex.dcc.ufmg.br/en/author/jeroen-van-de-graaf/)
+**Jeroen van de Graaf** — Chief Scientist; Advisory Board · Professor, DCC–UFMG · [DCC/UFMG](https://dcc.ufmg.br/professor/jeroen-van-de-graaf/) · [DBLP](https://dblp.org/pid/27/6925.html) · [Lattes](http://lattes.cnpq.br/0069989873499216) · [Google Scholar](https://scholar.google.com.br/citations?user=-w8olWwAAAAJ)
 
 Full bios: [GRIFORTIS](https://github.com/GRIFORTIS).
 
