@@ -1,6 +1,6 @@
 # Previous Versions
 
-This directory contains frozen historical snapshots of released Schiavinato Sharing protocol versions.
+This directory contains frozen historical snapshots of released protocol versions.
 
 ## Policy
 - The repo root remains the live working tree for the current protocol.

@@ -1,10 +1,10 @@
 # Review & Feedback
 
-DuraShare is **experimental** and **not audited**.
+DuraShare modifies existing, well-established cryptographic techniques for human-executable threshold backup. Reference implementations are thoroughly tested, published as-is, and have not been independently audited.
 
-We welcome review from cryptographers, wallet architects, implementers, custody practitioners, and people who have run real-world key-backup ceremonies.
+Technical feedback is welcome from cryptographers, wallet architects, implementers, custody practitioners, and people who have run real-world key-backup ceremonies.
 
-Prototype implementations may lag the current specification. Treat the whitepaper, `manual_spec/`, `software_spec/`, and `test_vectors/` as the review targets. Implementation repositories should declare explicit spec/vector support before being treated as conformant.
+Treat the whitepaper, `manual_spec/`, `software_spec/`, and `test_vectors/` as the primary review targets. Implementation repositories should declare explicit spec/vector support before being treated as conformant.
 
 ## High-Value Review Targets
 
@@ -25,9 +25,9 @@ Prototype implementations may lag the current specification. Treat the whitepape
 - **Printer/output tiers**: whether secret-bearing and non-secret-but-sensitive output boundaries are understandable.
 - **Recursive composition**: whether layer semantics, metadata, and MAT independence are clear.
 
-## Out of Scope for First Review Pass
+## Out of Scope Here
 
-- Treating prototype implementations as conformant references.
+- Treating non-conformant implementations as references.
 - Operational deployment recommendations for real funds.
 - UI polish unrelated to safety, recoverability, or auditability.
 - Hardware manufacturing details for manual RNG tools.

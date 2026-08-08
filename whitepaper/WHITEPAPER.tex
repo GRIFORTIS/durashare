@@ -76,7 +76,7 @@
 % ABSTRACT
 % ============================================================================
 \begin{abstract}
-Long-horizon self-custody needs backups that can survive lost devices, obsolete software, and unavailable vendors. DuraShare (formerly Schiavinato Sharing) is a BIP39-native $k$-of-$n$ threshold backup scheme that applies standard Shamir sharing directly to BIP39 word indices over $\GF(2053)$, the smallest prime field containing the 2048-word list. The rename during the v0.7.x era is brand-only: protocol lineage, mathematics, and historical archives are unchanged. The normal workflow is software-assisted on an offline device, but the stored artifacts remain recoverable from paper, pre-computed Lagrange coefficients, and ordinary modular arithmetic.
+Long-horizon self-custody needs backups that can survive lost devices, obsolete software, and unavailable vendors. DuraShare is a BIP39-native $k$-of-$n$ threshold backup scheme that applies standard Shamir sharing directly to BIP39 word indices over $\GF(2053)$, the smallest prime field containing the 2048-word list. The normal workflow is software-assisted on an offline device, but the stored artifacts remain recoverable from paper, pre-computed Lagrange coefficients, and ordinary modular arithmetic.
 
 Each Share includes public consistency checks forming a distance-4 product-code layer: they detect every passive error pattern affecting up to three cells and give a unique single-cell repair candidate under an explicit single-error assumption. These checks catch arithmetic, transcription, damage, and share-number mistakes; they are not authentication against deliberate replacement.
 
