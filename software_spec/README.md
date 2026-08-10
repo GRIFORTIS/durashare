@@ -1,10 +1,8 @@
 # DuraShare - Software Specification (`software_spec`)
 
-> ## WARNING: EXPERIMENTAL SOFTWARE
+> ## Status
 >
-> DO NOT USE IT FOR REAL FUNDS.
->
-> DuraShare specifications and prototype implementations have not been audited. Use for testing, learning, and review only. See the organization security policy for private disclosures.
+> DuraShare modifies existing, well-established cryptographic techniques for human-executable workflows. Specifications and reference implementations have not been independently audited. **Do not use with real funds.** See the organization [SECURITY](https://github.com/GRIFORTIS/.github/blob/main/SECURITY.md) policy.
 
 This document defines the v0.7.0 software-assisted workflow and digital envelope for DuraShare.
 

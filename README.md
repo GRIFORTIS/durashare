@@ -1,62 +1,20 @@
 # DuraShare (Specification)
 
-**Current version:** v0.7.0
-
-> ## Schiavinato Sharing is now DuraShare
->
-> **Schiavinato Sharing is now DuraShare.** This is a brand rename only: the protocol lineage through v0.7.0, mathematics, test vectors, and historical archives are unchanged. Older release assets and `previous_versions/` keep their original titles. Canonical repositories are now `GRIFORTIS/durashare` (and `durashare-html` / `durashare-js` / `durashare-py`); old `schiavinato-sharing*` URLs redirect.
-
-[![Security: Experimental](https://img.shields.io/badge/Security-⚠️%20EXPERIMENTAL%20⚠️-red)](https://github.com/GRIFORTIS/.github/blob/main/SECURITY.md)
+[![Security: Unaudited](https://img.shields.io/badge/Security-Unaudited-orange)](https://github.com/GRIFORTIS/.github/blob/main/SECURITY.md)
 [![CI](https://github.com/GRIFORTIS/durashare/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/GRIFORTIS/durashare/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/GRIFORTIS/durashare/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/GRIFORTIS/durashare/actions/workflows/codeql.yml)
 [![Whitepaper: CC BY 4.0](https://img.shields.io/badge/Whitepaper-CC%20BY%204.0-green.svg)](LICENSE-WHITEPAPER.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> ## ⚠️ WARNING: EXPERIMENTAL SOFTWARE ⚠️
-> 
-> DO NOT USE IT FOR REAL FUNDS!
->
-> DuraShare specification and implementations have NOT been audited. Use for testing, learning, and experimentation only. See [SECURITY](https://github.com/GRIFORTIS/.github/blob/main/SECURITY.md) for details.
->
-> We invite **cryptographers** and **developers** to review the spec and software. See [CONTRIBUTING](https://github.com/GRIFORTIS/.github/blob/main/CONTRIBUTING.md) to know more.
+## DuraShare
 
-## Quick Start
+**DuraShare: BIP39-Native Threshold Backup over GF(2053) with Full Manual Fallback and Per-Share Audit**
 
-### What reviewers should look at
-- [`docs/review`](docs/review.md)
+DuraShare uses Shamir secret sharing to split a **standard BIP39** recovery phrase into **k-of-n** durable, human-readable shares in an offline, software-assisted experience, **while keeping all the math executable manually on paper**. It also allows **individual geographically distributed shares to be verified** before recovery, without gathering a threshold or revealing the secret.
 
-High-value review targets:
-- Correctness and clarity of manual validation checkpoints (row checksums, column checksums, and GIC)
-- Per-share audit semantics (Share Audit Ceremony, MAT, Manifest Audit Hash)
-- Security analysis and threat model assumptions (see `whitepaper/WHITEPAPER.tex`)
-- RBT derivation and Full/Compact Payload semantics (`software_spec/`)
-- Software-assisted Sharing ceremony flow diagrams (`docs/software-flows/`)
-- Conformance vectors (`test_vectors/`)
+DuraShare **modifies existing, well-established cryptographic techniques** for human-friendly threshold backup. Reference implementations are thoroughly tested, published in good faith **as is**, and have **not** been independently audited. See [Disclaimer](#disclaimer).
 
-### Canonical documents
-- **Whitepaper**: [PDF](whitepaper/WHITEPAPER.pdf) | [LaTeX](whitepaper/WHITEPAPER.tex)
-- **Current manual execution specification**: [`manual_spec/README`](manual_spec/README.md)
-- **Current software (digital envelope) specification**: [`software_spec/README`](software_spec/README.md)
-- **Test vectors**: [`test_vectors/README`](test_vectors/README.md)
-- **Previous version archives**: [`previous_versions/README`](previous_versions/README.md)
-- **Security policy**: [SECURITY](https://github.com/GRIFORTIS/.github/blob/main/SECURITY.md)
-- **Proposals**: [`proposals/`](proposals/)
-
-### Implementations
-Prototype implementations are work in progress and may lag the current specification. They are useful for experimentation and review, but should not be treated as conformant until each repository explicitly declares support for the current spec and vectors:
-- **HTML (single-file, air-gapped)**: [`durashare-html`](https://github.com/GRIFORTIS/durashare-html)
-- **JavaScript/TypeScript**: [`durashare-js`](https://github.com/GRIFORTIS/durashare-js)
-- **Python**: [`durashare-py`](https://github.com/GRIFORTIS/durashare-py)
-
-**Deployment note:** For higher-assurance Sharing, Share Audit, or Recovery ceremonies, the single-file HTML tool can be verified by PGP signature, loaded from a USB stick, and run in a [Tails OS](https://tails.boum.org/) session on a laptop with networking disabled. Share artifacts are then printed, engraved, or hand-transcribed according to the chosen printer-trust tier and media.
-
-
-
-## About DuraShare
-
-**In one line:** DuraShare lets you split a standard **BIP39** recovery phrase into **k-of-n** durable, human-readable backup shares, with optional **per-share audit** before recovery. The normal experience is **offline, software-assisted sharing and recovery**; the same core math can also be executed fully manually when software is unavailable or untrusted.
-
-### Typical lifecycle
+## Typical lifecycle
 
 ![DuraShare operational flow](docs/protocol-lifecycle.png)
 
@@ -78,9 +36,9 @@ In practice, the protocol is **software-assisted first**. In the normal path, an
 
 ## Why Manual Fallback Matters
 
-Manual fallback is not the recommended everyday workflow. It is the sovereignty backstop.
+Manual fallback is not the recommended everyday workflow. It is the sovereignty backstop and can be a fun project to work on.
 
-The software should make Sharing and Recovery easier, faster, and less error-prone. But a backup meant for serious self-custody should not become useless just because the original app is gone, a vendor disappears, a subscription lapses, a hosted service shuts down, an app store is blocked, an operating system changes, or Recovery happens years later in a constrained environment. DuraShare keeps the software-assisted workflow practical while keeping the arithmetic readable from durable artifacts such as paper, metal, or other long-lived media.
+The software should make Sharing, Audit and Recovery easier, faster, and less error-prone. But a backup meant for serious self-custody should not become useless just because the original app is gone, a vendor disappears, a subscription lapses, a hosted service shuts down, an app store is blocked, an operating system changes, or Recovery happens years later in a constrained environment. DuraShare keeps the software-assisted workflow practical while keeping the arithmetic readable from durable artifacts such as paper, metal, or other long-lived media.
 
 The same shares can be generated or recovered using printed or engraved tables, a basic calculator, modular arithmetic, and precomputed Lagrange coefficients. In other words: use software when you can; keep the fully manual ceremony path specified for when you cannot.
 
@@ -88,7 +46,17 @@ The same shares can be generated or recovered using printed or engraved tables, 
 
 Long-term, geographically distributed backups should be checkable before the day they are needed. DuraShare defines a separate **Share Audit Ceremony**: one physical share can be audited at a time, wherever it is stored, without gathering a threshold set, combining shares, or exposing the mnemonic. In many backup systems, a meaningful audit effectively becomes a recovery drill: enough shares must be brought together to reconstruct or nearly reconstruct the secret, increasing coordination burden and creating an unnecessary exposure event. Here, Share Audit and Recovery are separate ceremonies.
 
-In the manual Share Audit Ceremony, public row/column/GIC checks detect passive damage or transcription errors, while optional MAT tags can authenticate the word rows against separately stored Manifest key material. In the software-assisted Share Audit Ceremony, Full and Compact payloads plus Manifest Audit Hashes add computational checks when a separate Manifest is available. The result is a practical pre-recovery check: each geographically distributed custodian artifact can be inspected periodically without gathering a threshold set or turning Share Audit into Recovery.
+In the manual Share Audit Ceremony, public row/column/GIC checks detect passive damage or transcription errors, while optional Manual Authentication Tag (MAT) can authenticate the word rows against separately stored Manifest key material. In the software-assisted Share Audit Ceremony, Full and Compact payloads plus Manifest Audit Hashes add computational checks when a separate Manifest is available. The result is a practical pre-recovery check: each geographically distributed custodian artifact can be inspected periodically without gathering a threshold set or turning Share Audit into Recovery.
+
+## Why Not Just Use Multisig?
+
+Multisig is a strong answer to a different question.
+
+On-chain multisig and related threshold-signing designs decide **who may spend** under a policy. DuraShare decides how to **back up a BIP39 mnemonic** into durable k-of-n shares, with optional per-share audit and a path that does not permanently depend on one app or vendor. You can use both: multisig (or singlesig) for spending, and a threshold backup protocol for the seed material behind it.
+
+**The silent Single Point of Failure (SPOF) in Multisig that nobody talks about:** “2-of-3 seeds rebuild the wallet” matches secret sharing. It does not fully match script multisig. Spending usually needs a threshold of private keys; rebuilding often also needs the **wallet definition**—descriptor, script template, derivation, and the full set of public keys. That material is easy to leave in an app or an encrypted file and discover only when a cosigner device is already gone. Checking that a vault still signs (message or PSBT) is also not the same as checking that a dormant seed backup is intact.
+
+Find more here: [`docs/authorization-vs-backup`](docs/authorization-vs-backup.md).
 
 ## Who This Is For
 
@@ -107,10 +75,11 @@ DuraShare is for people and organizations that want threshold backup of an exist
 - **Human-readable shares:** A share is a table of numbers and word indices with checksums, optionally paired with a QR payload for software-assisted validation. Artifacts may be paper, metal, or other long-lived media. A separate optional Manifest can track the shares, their destinations, and audit fingerprints without containing the mnemonic or plaintext share contents.
 - **Offline-first workflow:** The recommended path for any ceremony uses an air-gapped tool to do the math, guide the user, create share tables, and optionally produce QR payloads and Manifests.
 - **Full manual path:** The same protocol can be executed without software: Sharing, Share Audit and Recovery can be done with durable tables, modular arithmetic, random coefficients, checksums, and precomputed Lagrange coefficients. Software is helpful, not mandatory forever.
+- **Manual-generated entropy:** Sharing needs uniform random elements in GF(2053). Those can be produced without a computer via a mixed-radix rejection sampler (including physical aids such as DuraDice-39). The same method is available on the software-assisted path when operators prefer not to trust the device CSPRNG for coefficient generation.
 - **Error detection:** Row checksums, column checksums, and a **Global Integrity Check** help catch arithmetic mistakes, transcription errors, damaged entries, and wrong share labels before they silently become a bad recovery.
 - **Output profiles:** Two profiles available, Full and Compact. The first serializes the complete canonical arithmetic table and includes a Transport Hash. The second serializes word shares only, reducing QR size and hand-transcription burden while checking against the printed table.
 - **Per-share audit:** The protocol defines a separate **Share Audit Ceremony**, so one physical share can be checked before Recovery without combining it with other shares. Public row/column/GIC checks catch passive corruption, optional MAT tags provide bounded manual substitution detection, and a separately stored Manifest Audit Hash can commit to each share payload.
-- **Post-recovery validation:** After the Recovery ceremony, software can check the BIP39 checksum, compare the protocol-input-bound **Recovery Binding Tag (RBT)**, and optionally compare a truncated **Recovery Verification Address (RVA)** re-derived offline from the intended wallet setup.
+- **Post-recovery validation:** After the Recovery ceremony, software can check the BIP39 checksum and compare the protocol-input-bound **Recovery Binding Tag (RBT)**. An optional truncated **Recovery Verification Address (RVA)** recorded at Sharing is re-derived offline from the recovered mnemonic under the intended wallet context (derivation and optional BIP39 passphrase) and compared as a post-recovery wallet witness—by software or by hand.
 - **Nested custody:** A share can itself be shared again, enabling layered arrangements such as family, business, trustee, or inheritance structures. Full Output Profile supports up to **four active layers** and Compact up to **two active layers**, while single-layer Sharing remains the baseline workflow.
 - **Output choices:** The protocol distinguishes printer trust levels, so secret-bearing material is only sent to devices appropriate for the Sharing ceremony. When printing is not trusted or not available, users can hand-transcribe the share tables and, where used, copy or paint the QR grids by hand.
 - **Pause and resume:** Longer software-assisted Sharing ceremonies can be paused and resumed with encrypted resume artifacts. A companion app may help store or transport those encrypted artifacts and non-secret print materials without seeing the mnemonic, plaintext shares, random coefficients, or recovery secret.
@@ -121,7 +90,7 @@ DuraShare is for people and organizations that want threshold backup of an exist
 - **Not** protection against every real-world threat. Physical security, custodian selection, ceremony hygiene, and malware resistance still matter.
 - **Not** magic against **k or more compromised shares**. If enough valid shares are exposed, the mnemonic can be recovered.
 - **Not** authentication by checksums alone. A malicious party who can rewrite a whole share may also recompute its arithmetic checks; substitution detection comes from custody practice, Manifests, identity checks, and wallet-context checks where used.
-- **Not** audited production cryptography; treat as **experimental**.
+- **Not** independently audited production software; implementations are published as-is.
 
 ## Comparison with related approaches
 
@@ -161,9 +130,23 @@ SLIP39 and SSKR are built for software-led recovery. Both use sound finite-field
 
 **(a)** SLIP39 restoration does not reproduce a standard BIP39 wallet from the same encoded material. **(b)** SSKR preserves the usual BIP39 seed when round-tripped through its documented encodings; the share transport is not aimed at hand evaluation of GF arithmetic. **(c)** Public consistency checks, optional MAT, and Manifest Audit Hashes support single-share verification without recombination. **(d)** RBT tests the recovered protocol object; RVA tests the intended wallet context, including derivation and optional passphrase. **(e)** SLIP39 embeds a four-byte reconstruction digest in the polynomial so the reconstructed master secret self-checks.
 
-## Licenses
-- **Code**: [MIT License](LICENSE)
-- **Whitepaper**: [CC BY 4.0](LICENSE-WHITEPAPER.md)
+## Canonical documents
+- **Whitepaper**: [PDF](whitepaper/WHITEPAPER.pdf) | [LaTeX](whitepaper/WHITEPAPER.tex)
+- **Manual execution specification**: [`manual_spec/README`](manual_spec/README.md)
+- **Software (digital envelope) specification**: [`software_spec/README`](software_spec/README.md)
+- **Test vectors**: [`test_vectors/README`](test_vectors/README.md)
+- **Previous version archives**: [`previous_versions/README`](previous_versions/README.md)
+- **Security policy**: [SECURITY](https://github.com/GRIFORTIS/.github/blob/main/SECURITY.md)
+- **Standing review guide**: [`docs/review`](docs/review.md)
+- **Proposals**: [`proposals/`](proposals/)
+
+## Implementations
+Reference implementations may lag the current specification. Treat each repository as conformant only when it explicitly declares support for the current spec and vectors:
+- **HTML (single-file, air-gapped)**: [`durashare-html`](https://github.com/GRIFORTIS/durashare-html)
+- **JavaScript/TypeScript**: [`durashare-js`](https://github.com/GRIFORTIS/durashare-js)
+- **Python**: [`durashare-py`](https://github.com/GRIFORTIS/durashare-py)
+
+**Deployment note:** For higher-assurance Sharing, Share Audit, or Recovery ceremonies, the single-file HTML tool can be verified by PGP signature, loaded from a USB stick, and run in a [Tails OS](https://tails.boum.org/) session on a laptop with networking disabled. Share artifacts are then printed, engraved, or hand-transcribed according to the chosen printer-trust tier and media.
 
 ## Release authenticity
 - Release source state is anchored on signed git tags.
@@ -178,7 +161,6 @@ Feedback on earlier drafts of the protocol or related specification material (no
 
 - Jean Martina — LabSEC, INE–UFSC
 - Julio López — LASCA, IC–UNICAMP
-- Jeroen van de Graaf — DCC–ICEx–UFMG
 - Edil Medeiros — ENE–UnB; Vinteum/Casa21
 - jaonoctus — ZBD; Vinteum/Casa21
 
@@ -187,8 +169,25 @@ Feedback on earlier drafts of the protocol or related specification material (no
 Dated public discussion of the protocol. This is not an endorsement.
 
 - 2026-07-23 — [São Paulo BitDevs, Seminário Socrático 046](https://saopaulobitdevs.org/2026-07-23-socratic-seminar-046) — protocol discussion
+
+## People
+
+### Renato Schiavinato Lopez — Founder & Protocol Author
+- Creator of DuraShare.
+- [LinkedIn](https://www.linkedin.com/in/renato-agile-coach/) · [GitHub](https://github.com/renatoslopes)
+
+### Jeroen van de Graaf — Chief Scientist; Advisory Board
+- Professor, DCC–UFMG. Cryptographer (ZK, MPC, privacy, applied protocols); PhD, Université de Montréal (1997).
+- [DCC/UFMG](https://dcc.ufmg.br/professor/jeroen-van-de-graaf/) · [DBLP](https://dblp.org/pid/27/6925.html) · [Lattes](http://lattes.cnpq.br/0069989873499216) · [Google Scholar](https://scholar.google.com.br/citations?user=-w8olWwAAAAJ)
+
+## Licenses
+- **Code**: [MIT License](LICENSE)
+- **Whitepaper**: [CC BY 4.0](LICENSE-WHITEPAPER.md)
+
+## Disclaimer
+
+Software has been thoroughly tested and is not known to contain errors. It is made available in good faith, as is, so use at your own risk. The author does not assume any responsibility for any damage, financial or other, that may result from using this software. Reference implementations have not been independently audited. **Do not use with real funds.** See [SECURITY](https://github.com/GRIFORTIS/.github/blob/main/SECURITY.md).
+
 ---
 
-**Status**: Experimental  
-**Created by**: [Renato Schiavinato Lopez](https://github.com/renatoslopes)  
 **Maintained by**: [GRIFORTIS](https://github.com/GRIFORTIS)

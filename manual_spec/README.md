@@ -2,11 +2,9 @@
 
 [Jump to Share Audit](#share-audit) | [Jump to Manual Recovery](#manual-recovery) | [Jump to Manual Sharing](#manual-sharing)
 
-> ## WARNING: EXPERIMENTAL SOFTWARE
+> ## Status
 >
-> DO NOT USE IT FOR REAL FUNDS.
->
-> DuraShare specifications and prototype implementations have not been audited. Use for testing, learning, and review only. See the organization security policy for private disclosures.
+> DuraShare modifies existing, well-established cryptographic techniques for human-executable workflows. Specifications and reference implementations have not been independently audited. **Do not use with real funds.** See the organization [SECURITY](https://github.com/GRIFORTIS/.github/blob/main/SECURITY.md) policy.
 
 This document defines the manual execution protocol for DuraShare v0.7.0. It is recovery-first: recovery and audit are the continuity-critical procedures, while fully manual sharing is a fallback for cases where software cannot be trusted or used.
 
