@@ -6,15 +6,15 @@
 [![Whitepaper: CC BY 4.0](https://img.shields.io/badge/Whitepaper-CC%20BY%204.0-green.svg)](LICENSE-WHITEPAPER.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## About DuraShare
+## DuraShare
 
 **DuraShare: BIP39-Native Threshold Backup over GF(2053) with Full Manual Fallback and Per-Share Audit**
 
 DuraShare uses Shamir secret sharing to split a **standard BIP39** recovery phrase into **k-of-n** durable, human-readable shares in an offline, software-assisted experience, **while keeping all the math executable manually on paper**. It also allows **individual geographically distributed shares to be verified** before recovery, without gathering a threshold or revealing the secret.
 
-DuraShare **modifies existing, well-established cryptographic techniques** for human-friendly threshold backup. This implementation is thoroughly tested, published in good faith **as is**, and has **not** been independently audited. **Do not use with real funds.** See [Disclaimer](#disclaimer).
+DuraShare **modifies existing, well-established cryptographic techniques** for human-friendly threshold backup. Reference implementations are thoroughly tested, published in good faith **as is**, and have **not** been independently audited. See [Disclaimer](#disclaimer).
 
-### Typical lifecycle
+## Typical lifecycle
 
 ![DuraShare operational flow](docs/protocol-lifecycle.png)
 
@@ -33,8 +33,6 @@ At the technical layer, DuraShare is a **Shamir-style** secret sharing scheme ap
 Any **k** of **n** shares reconstruct the original mnemonic. Fewer than **k** shares reveal no information about it, under the standard information-theoretic secrecy claim of Shamir sharing. The optional **BIP39 passphrase** ("25th word") is **NOT** stored in the shares and must be backed up and re-entered separately if you use one.
 
 In practice, the protocol is **software-assisted first**. In the normal path, an offline tool handles the arithmetic, guides the **Sharing**, **Share Audit**, and **Recovery** ceremonies, validates intermediate checks, and produces printable or hand-transcribable share and manifest artifacts. The intended reference path is a single PGP-verified HTML file that can run locally on an air-gapped computer; high-assurance runs of those ceremonies can use a [Tails OS](https://tails.boum.org/) USB session.
-
-DuraShare **modifies existing, well-established cryptographic techniques** so threshold backup and recovery remain human-friendly — including fully manual execution with simple arithmetic aids when needed. Reference implementations are thoroughly tested, published in good faith **as is**, and have **not** been independently audited. **Do not use with real funds.** See [Disclaimer](#disclaimer).
 
 ## Why Manual Fallback Matters
 
