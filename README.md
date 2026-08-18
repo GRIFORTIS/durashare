@@ -10,7 +10,17 @@
 
 **DuraShare: BIP39-Native Threshold Backup over GF(2053) with Full Manual Fallback and Per-Share Audit**
 
-DuraShare uses Shamir secret sharing to split a **standard BIP39** recovery phrase into **k-of-n** durable, human-readable shares in an offline, software-assisted experience, **while keeping all the math executable manually on paper**. It also allows **individual geographically distributed shares to be verified** before recovery, without gathering a threshold or revealing the secret.
+DuraShare is a human-first, software-assisted **k-of-n** threshold secret sharing protocol for BIP39 mnemonics with one arithmetic layer and two operational paths: a recommended computational deployment and a **full manual fallback**. It applies Shamir Secret Sharing over the prime field GF(2053) directly to the 1-indexed BIP39 word indices (1..2048), word by word, producing durable, human-readable shares that can be validated and recovered either by hand (modular arithmetic + precomputed Lagrange coefficients) or via an air-gapped tool (with a digital envelope). It also allows **individual geographically distributed shares to be verified** before recovery, without gathering a threshold or revealing the secret.
+
+Key features (see [What it does and how](#what-it-does-and-how) for details):
+- One math, two paths: software or fully manual (no black box, no lock-in)
+- BIP39-native: split the seed you already have (no new word list, no moving funds)
+- Flexible k-of-n, from common 2-of-3 setups to advanced high-threshold schemes; fewer than k shares reveal nothing
+- Optional nesting: groups of groups with individual k-of-n each (up to 4 layers)
+- Human-readable shares: print secret-bearing material only to an offline, non-network printer, or copy by hand
+- Built-in error detection: detects any passive copy mistake or damage affecting up to 3 cells per share
+- Per-share audit: authenticate one share where it lives, without gathering the others or revealing the secret
+- Post-recovery checks including wallet derivation and BIP39 passphrase (passphrase is not stored and demands its own backup)
 
 DuraShare **modifies existing, well-established cryptographic techniques** for human-friendly threshold backup. Reference implementations are thoroughly tested, published in good faith **as is**, and have **not** been independently audited. See [Disclaimer](#disclaimer).
 
@@ -18,7 +28,7 @@ DuraShare **modifies existing, well-established cryptographic techniques** for h
 
 ![DuraShare operational flow](docs/protocol-lifecycle.png)
 
-Non-normative overview: Sharing → geographic custody with per-share audit → Recovery (software-assisted or fully manual). The whitepaper and specs remain authoritative. Vector source: [`docs/protocol-lifecycle.svg`](docs/protocol-lifecycle.svg).
+Non-normative overview: Sharing → geographic share keeping with per-share audit → Recovery (software-assisted or fully manual). The whitepaper and specs remain authoritative. Vector source: [`docs/protocol-lifecycle.svg`](docs/protocol-lifecycle.svg).
 
 ## Problem
 
@@ -32,7 +42,7 @@ At the technical layer, DuraShare is a **Shamir-style** secret sharing scheme ap
 
 Any **k** of **n** shares reconstruct the original mnemonic. Fewer than **k** shares reveal no information about it, under the standard information-theoretic secrecy claim of Shamir sharing. The optional **BIP39 passphrase** ("25th word") is **NOT** stored in the shares and must be backed up and re-entered separately if you use one.
 
-In practice, the protocol is **software-assisted first**. In the normal path, an offline tool handles the arithmetic, guides the **Sharing**, **Share Audit**, and **Recovery** ceremonies, validates intermediate checks, and produces printable or hand-transcribable share and manifest artifacts. The intended reference path is a single PGP-verified HTML file that can run locally on an air-gapped computer; high-assurance runs of those ceremonies can use a [Tails OS](https://tails.boum.org/) USB session.
+In practice, the protocol is **software-assisted first**. In the normal path, an offline tool handles the arithmetic, guides the **Sharing**, **Share Audit**, and **Recovery** ceremonies, validates intermediate checks, and produces printable or hand-transcribable share and manifest artifacts. The intended reference path is a single PGP-verified HTML file that can run locally on an air-gapped computer using a clean, freshly installed or live operating system; high-assurance runs of those ceremonies can use a [Tails OS](https://tails.boum.org/) USB session.
 
 ## Why Manual Fallback Matters
 
@@ -46,7 +56,7 @@ The same shares can be generated or recovered using printed or engraved tables, 
 
 Long-term, geographically distributed backups should be checkable before the day they are needed. DuraShare defines a separate **Share Audit Ceremony**: one physical share can be audited at a time, wherever it is stored, without gathering a threshold set, combining shares, or exposing the mnemonic. In many backup systems, a meaningful audit effectively becomes a recovery drill: enough shares must be brought together to reconstruct or nearly reconstruct the secret, increasing coordination burden and creating an unnecessary exposure event. Here, Share Audit and Recovery are separate ceremonies.
 
-In the manual Share Audit Ceremony, public row/column/GIC checks detect passive damage or transcription errors, while optional Manual Authentication Tag (MAT) can authenticate the word rows against separately stored Manifest key material. In the software-assisted Share Audit Ceremony, Full and Compact payloads plus Manifest Audit Hashes add computational checks when a separate Manifest is available. The result is a practical pre-recovery check: each geographically distributed custodian artifact can be inspected periodically without gathering a threshold set or turning Share Audit into Recovery.
+In the manual Share Audit Ceremony, public row/column/GIC checks detect passive damage or transcription errors, while optional Manual Authentication Tag (MAT) can authenticate the word rows against separately stored Manifest key material. In the software-assisted Share Audit Ceremony, Full and Compact payloads plus Manifest Audit Hashes add computational checks when a separate Manifest is available. The result is a practical pre-recovery check: each geographically distributed artifact can be inspected periodically without gathering a threshold set or turning Share Audit into Recovery.
 
 ## Why Not Just Use Multisig?
 
@@ -67,29 +77,29 @@ DuraShare is for people and organizations that want threshold backup of an exist
 - **Businesses, family offices, and Bitcoin treasury holders** that need durable backup for seed material, whether the spending setup uses single-sig, multisig, dedicated hardware wallets, or a combination of custody controls.
 - **Professional advisors and service providers** helping clients run Sharing, Share Audit, and Recovery ceremonies while keeping the advisor out of the secret-handling path.
 - **Non-Governmental Organizations, civil-society groups, journalists, activists, and human-rights defenders** that hold Bitcoin across people or jurisdictions and need recovery arrangements that do not rely on a single account, app store, vendor, or country.
-- **Cross-border custody arrangements** where shares are held in different locations and recovery should remain possible even when travel, infrastructure, or access to specific services is disrupted.
+- **Cross-border share-keeping arrangements** where shares are held in different locations and recovery should remain possible even when travel, infrastructure, or access to specific services is disrupted.
 
 ## What it does and how
 
 - **Threshold backup:** Split one BIP39 phrase into **n** shares and choose how many are needed to recover it. Typical examples are 2-of-3, 2-of-4, or 3-of-5.
 - **Human-readable shares:** A share is a table of numbers and word indices with checksums, optionally paired with a QR payload for software-assisted validation. Artifacts may be paper, metal, or other long-lived media. A separate optional Manifest can track the shares, their destinations, and audit fingerprints without containing the mnemonic or plaintext share contents.
-- **Offline-first workflow:** The recommended path for any ceremony uses an air-gapped tool to do the math, guide the user, create share tables, and optionally produce QR payloads and Manifests.
+- **Software-assisted workflow:** The recommended path for any ceremony uses an air-gapped tool to do the math, guide the user, create share tables, and optionally produce QR payloads and Manifests.
 - **Full manual path:** The same protocol can be executed without software: Sharing, Share Audit and Recovery can be done with durable tables, modular arithmetic, random coefficients, checksums, and precomputed Lagrange coefficients. Software is helpful, not mandatory forever.
-- **Manual-generated entropy:** Sharing needs uniform random elements in GF(2053). Those can be produced without a computer via a mixed-radix rejection sampler (including physical aids such as DuraDice-39). The same method is available on the software-assisted path when operators prefer not to trust the device CSPRNG for coefficient generation.
-- **Error detection:** Row checksums, column checksums, and a **Global Integrity Check** help catch arithmetic mistakes, transcription errors, damaged entries, and wrong share labels before they silently become a bad recovery.
-- **Output profiles:** Two profiles available, Full and Compact. The first serializes the complete canonical arithmetic table and includes a Transport Hash. The second serializes word shares only, reducing QR size and hand-transcription burden while checking against the printed table.
-- **Per-share audit:** The protocol defines a separate **Share Audit Ceremony**, so one physical share can be checked before Recovery without combining it with other shares. Public row/column/GIC checks catch passive corruption, optional MAT tags provide bounded manual substitution detection, and a separately stored Manifest Audit Hash can commit to each share payload.
+- **Manual-generated entropy:** Sharing needs uniform random elements in GF(2053). Those can be produced without a computer via a mixed-radix rejection sampler (including physical aids such as DuraDice-39). The same method is available on the software-assisted path when operators prefer not to trust the device CSPRNG for entropy generation.
+- **Error detection:** Row checksums, column checksums, and a **Global Integrity Check (GIC)** help catch arithmetic mistakes, transcription errors, damaged entries, and wrong share labels before they silently become a bad recovery. Together they form a *q*-ary SPC product code with minimum distance *d*=4: any 1-, 2-, or 3-cell passive error is detected. Under a single-error assumption, the same checks identify a unique 1-cell repair; they are not safe as automatic correction when the number of wrong cells is unknown.
+- **Output profiles:** Two profiles available, Full and Compact. The first serializes the complete canonical arithmetic table and includes a Transport Hash (to validate the digital payload itself). The second serializes word shares only, reducing QR size and hand-transcription burden while checking against the printed table.
+- **Per-share audit:** The protocol defines a separate **Share Audit Ceremony**, so one physical share can be checked before Recovery without combining it with other shares. Public row/column/GIC checks catch passive corruption, optional Manual Authentication Tags (MAT) provide bounded manual substitution detection, and a separately stored Manifest Audit Hash can commit to each share payload.
 - **Post-recovery validation:** After the Recovery ceremony, software can check the BIP39 checksum and compare the protocol-input-bound **Recovery Binding Tag (RBT)**. An optional truncated **Recovery Verification Address (RVA)** recorded at Sharing is re-derived offline from the recovered mnemonic under the intended wallet context (derivation and optional BIP39 passphrase) and compared as a post-recovery wallet witness—by software or by hand.
-- **Nested custody:** A share can itself be shared again, enabling layered arrangements such as family, business, trustee, or inheritance structures. Full Output Profile supports up to **four active layers** and Compact up to **two active layers**, while single-layer Sharing remains the baseline workflow.
+- **Nested sharing:** A share can itself be shared again, enabling layered arrangements such as family, business, trustee, or inheritance structures. Full Output Profile supports up to **four active layers** and Compact up to **two active layers**, while single-layer Sharing remains the baseline workflow.
 - **Output choices:** The protocol distinguishes printer trust levels, so secret-bearing material is only sent to devices appropriate for the Sharing ceremony. When printing is not trusted or not available, users can hand-transcribe the share tables and, where used, copy or paint the QR grids by hand.
 - **Pause and resume:** Longer software-assisted Sharing ceremonies can be paused and resumed with encrypted resume artifacts. A companion app may help store or transport those encrypted artifacts and non-secret print materials without seeing the mnemonic, plaintext shares, random coefficients, or recovery secret.
 
 ## What it is not
 
 - **Not** multisig, MPC, or a spending policy. It protects recovery material; it does not decide who may sign transactions.
-- **Not** protection against every real-world threat. Physical security, custodian selection, ceremony hygiene, and malware resistance still matter.
+- **Not** protection against every real-world threat. Physical security, share keeper selection, ceremony hygiene, and malware resistance still matter.
 - **Not** magic against **k or more compromised shares**. If enough valid shares are exposed, the mnemonic can be recovered.
-- **Not** authentication by checksums alone. A malicious party who can rewrite a whole share may also recompute its arithmetic checks; substitution detection comes from custody practice, Manifests, identity checks, and wallet-context checks where used.
+- **Not** authentication by checksums alone. A malicious party who can rewrite a whole share may also recompute its arithmetic checks; substitution detection comes from optional MAT, Manifest Audit Hashes, share-keeping practice, identity checks, and wallet-context checks where used.
 - **Not** independently audited production software; implementations are published as-is.
 
 ## Comparison with related approaches
@@ -105,7 +115,7 @@ Codex32 uses BCH codes and paper aids such as volvelles and tables. It provides 
 | Primary scope | BIP39 | Bitcoin/BIP32 only | BIP39 |
 | Threshold flexibility | Full *k-of-n* | *k-of-n* (k<=9, n<=31) | *n-of-n* only |
 | Manual procedure | Integer arithmetic mod 2053 | BCH + volvelles/tables | XOR |
-| Error handling | Detection (*d*=4 linear layer) | Correction (BCH) | Weak / none |
+| Error handling | Detection (*d*=4 SPC product code); 1-cell repair if exactly one cell is wrong | Correction (BCH) | Weak / none |
 | Per-share pre-recovery check | Yes (a) | Error detection only | No |
 | Post-recovery verification | BIP39 + RBT + optional RVA (b) | Not BIP39-native output | BIP39 only |
 | BIP39 round-trip | Native I/O | No | Yes |
