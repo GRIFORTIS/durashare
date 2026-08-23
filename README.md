@@ -179,6 +179,11 @@ Feedback on earlier drafts of the protocol or related specification material (no
 Dated public discussion of the protocol. This is not an endorsement.
 
 - 2026-07-23 — [São Paulo BitDevs, Seminário Socrático 046](https://saopaulobitdevs.org/2026-07-23-socratic-seminar-046) — protocol discussion
+- 2026-08-20 - [Brasília BitDevs, Seminário Socrático 032](https://bitdevs.bsb.br/2026-08-20-socratic-seminar-032) - protocol presentation and call for feedback
+- 2026-08-21 - [Curitiba BitDevs, Seminário Socrático 017](https://curitibabitdevs.org/2026-08-21-socratic-seminar-017) - protocol presentation and call for feedback
+
+Upcoming:
+- 2026-08-27 - [Criptografia pós-quântica e backup distribuído de seed phrases](https://www.meetup.com/belo-horizonte-bitdevs/events/316023535/) - lecture presented by Prof. Jeroen van de Graaf at UFMG, followed by protocol discussion and Q&A
 
 ## People
 
