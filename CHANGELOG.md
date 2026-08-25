@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Checksum verification helpers now fail closed: missing listed files, empty `CHECKSUMS.txt`, path traversal, unrecognized lines, and zero hashed entries are errors.
+- Release Verify now authenticates the six published assets against the pinned GRIFORTIS OpenPGP fingerprint, `CHECKSUMS.txt`, and matching PDF pair hashes, instead of checking filenames only.
+
 ### Changed
 - Renamed the protocol brand from **Schiavinato Sharing** to **DuraShare**. Brand-only: protocol lineage through v0.7.0, mathematics, test vectors, and `previous_versions/` archives are unchanged. Canonical repositories renamed to `GRIFORTIS/durashare` (and `durashare-html` / `durashare-js` / `durashare-py`); old `schiavinato-sharing*` URLs redirect.
 - Renamed the public toy-model spreadsheet to `docs/DuraShare_Toy_Model.xlsx`.

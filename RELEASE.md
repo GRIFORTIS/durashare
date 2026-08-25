@@ -25,13 +25,16 @@ The current public signing key in this repo is:
 From the repository root, choose the release version and build the whitepaper:
 
 ```bash
-export VERSION="v0.7.0"
+export VERSION="v0.7.1"
 latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error -cd whitepaper/WHITEPAPER.tex
 mkdir -p release-assets
 cp whitepaper/WHITEPAPER.pdf "release-assets/WHITEPAPER.pdf"
 cp whitepaper/WHITEPAPER.pdf "release-assets/WHITEPAPER-${VERSION}.pdf"
-sha256sum "release-assets/WHITEPAPER.pdf" "release-assets/WHITEPAPER-${VERSION}.pdf" > "release-assets/CHECKSUMS.txt"
+(cd release-assets && sha256sum WHITEPAPER.pdf "WHITEPAPER-${VERSION}.pdf" > CHECKSUMS.txt)
+./scripts/verify-checksums.sh --local release-assets/CHECKSUMS.txt
 ```
+
+`CHECKSUMS.txt` must list the published asset names (`WHITEPAPER.pdf` and `WHITEPAPER-${VERSION}.pdf`), not local staging paths.
 
 ## Local detached signatures
 Create detached ASCII-armored signatures locally:
@@ -48,14 +51,18 @@ Then verify them immediately:
 gpg --verify "release-assets/WHITEPAPER.pdf.asc" "release-assets/WHITEPAPER.pdf"
 gpg --verify "release-assets/WHITEPAPER-${VERSION}.pdf.asc" "release-assets/WHITEPAPER-${VERSION}.pdf"
 gpg --verify "release-assets/CHECKSUMS.txt.asc" "release-assets/CHECKSUMS.txt"
-sha256sum -c "release-assets/CHECKSUMS.txt"
+(cd release-assets && sha256sum -c CHECKSUMS.txt)
 ```
 
 ## Signed tag
-Create and verify the release tag locally only after preflight and local asset verification succeed:
+The git tag is the repository-state attestation and must be OpenPGP-signed as `GRIFORTIS <security@grifortis.com>` so GitHub can verify it against the uploaded GRIFORTIS key. Do not change the repository `git config`; pass the identity for this command only. Commits remain SSH-signed.
 
 ```bash
-git tag -s "${VERSION}" -m "Release ${VERSION}"
+git -c gpg.format=openpgp \
+  -c user.signingkey=7921FD5694508DA4020E671F4CFE6248C57F15DF \
+  -c user.name="GRIFORTIS" \
+  -c user.email="security@grifortis.com" \
+  tag -s "${VERSION}" -m "Release ${VERSION}"
 git tag -v "${VERSION}"
 ```
 
@@ -75,7 +82,13 @@ After the signed tag is on the remote:
    - `WHITEPAPER-${VERSION}.pdf.asc`
    - `CHECKSUMS.txt`
    - `CHECKSUMS.txt.asc`
-3. Optionally run `.github/workflows/release.yml` after publishing if you want GitHub Actions to verify that the expected files were attached to the release.
+3. Run Release Verify after publishing. It must be green before the release is announced:
+
+```bash
+./scripts/verify-published-release.sh "${VERSION}"
+```
+
+That check requires all six assets, `VALIDSIG` under the pinned GRIFORTIS fingerprint, fail-closed checksums, and identical PDF pair bytes.
 
 ## Final spot-check
 After publishing:
@@ -83,6 +96,7 @@ After publishing:
 2. Verify the detached signatures with the public key.
 3. Verify `CHECKSUMS.txt`.
 4. Verify the signed git tag with `git tag -v`.
+5. Confirm GitHub shows the tag as Verified (`verification.reason=valid`).
 
 See [`docs/release-verification.md`](docs/release-verification.md) for the public-facing verification walkthrough.
 

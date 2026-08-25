@@ -187,6 +187,12 @@ jobs:
         run: |
           python -m compileall -q research/security-validation
 
+      - name: Checksum helper fail-closed tests
+        run: |
+          set -euo pipefail
+          chmod +x scripts/verify-checksums.sh scripts/tests/verify-checksums-test.sh
+          scripts/tests/verify-checksums-test.sh
+
   docs-links:
     name: Docs link sanity (relative links)
     runs-on: ubuntu-latest

@@ -51,6 +51,14 @@ It does **not** prove:
 3. Verify the detached signature for the exact file you downloaded.
 4. Verify the file hash against `CHECKSUMS.txt`.
 
+Maintainers can run the same chain as one command from a clone:
+
+```bash
+./scripts/verify-published-release.sh v0.7.0
+```
+
+`scripts/verify-checksums.sh --local CHECKSUMS.txt` is integrity-only and fail-closed: missing listed files are errors.
+
 ## Verify the signed tag
 
 After fetching tags:

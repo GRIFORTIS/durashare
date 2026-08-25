@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to publish (e.g., v0.7.0)'
+        description: 'Release tag to verify (e.g., v0.7.1)'
         required: true
         type: string
 
@@ -14,129 +14,78 @@ permissions:
   contents: read
 
 jobs:
-  release:
+  verify-published-release:
     name: Verify published release
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: github.event_name == 'release'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-        with:
-          fetch-depth: 0
-          # Build *from the release tag* for deterministic, auditable artifacts.
-          ref: ${{ github.event.release.tag_name }}
-
-      - name: Resolve tag and verify version alignment (strict)
+      - name: Resolve tag
         id: meta
         shell: bash
         env:
-          TAG_NAME: ${{ github.event.release.tag_name }}
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
-          if ! python3 - <<'PY'
-          import os, re
-          from pathlib import Path
-          tag = os.environ["TAG_NAME"]
-          if not re.fullmatch(r"v\d+\.\d+\.\d+", tag):
-              raise SystemExit(f"Invalid tag format: {tag!r} (expected vX.Y.Z)")
-          tex = Path("whitepaper/WHITEPAPER.tex").read_text(encoding="utf-8")
-          m = re.search(r"\\newcommand\{\\DuraShareVersion\}\{([^}]+)\}", tex)
-          if not m:
-              raise SystemExit("Missing \\DuraShareVersion macro in whitepaper/WHITEPAPER.tex")
-          version = m.group(1).strip()
-          if version != tag:
-              raise SystemExit(f"Tag/whitepaper mismatch: tag={tag!r} whitepaper={version!r}")
-          print(f"OK: tag={tag} whitepaper={version}")
-          PY
-          then
+          if [ "${EVENT_NAME}" = "release" ]; then
+            TAG_NAME="${RELEASE_TAG}"
+          else
+            TAG_NAME="${INPUT_TAG}"
+          fi
+          if [ -z "${TAG_NAME}" ]; then
+            echo "Missing release tag" >&2
             exit 1
           fi
           echo "tag=${TAG_NAME}" >> "$GITHUB_OUTPUT"
 
-      - name: Verify published release assets
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG_NAME: ${{ steps.meta.outputs.tag }}
-        run: |
-          set -euo pipefail
-          expected=(
-            "WHITEPAPER.pdf"
-            "WHITEPAPER.pdf.asc"
-            "WHITEPAPER-${TAG_NAME}.pdf"
-            "WHITEPAPER-${TAG_NAME}.pdf.asc"
-            "CHECKSUMS.txt"
-            "CHECKSUMS.txt.asc"
-          )
-          for f in "${expected[@]}"; do
-            gh release view "${TAG_NAME}" --repo "${GITHUB_REPOSITORY}" --json assets --jq '.assets[].name' | grep -Fx -- "${f}" >/dev/null
-          done
-
-  verify-existing-release:
-    name: Verify existing published release
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    if: github.event_name != 'release'
-
-    steps:
-      - name: Validate tag input
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ -z "${{ inputs.tag }}" ]; then
-            echo "Missing required input: tag (e.g., v0.7.0)" >&2
-            exit 1
-          fi
-
-      - name: Checkout code
+      - name: Checkout verifier (workflow commit)
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
-          ref: ${{ inputs.tag }}
 
-      - name: Verify tag/version alignment (strict)
-        id: meta
+      - name: Fetch the release tag
         shell: bash
         env:
-          TAG_NAME: ${{ inputs.tag }}
+          TAG_NAME: ${{ steps.meta.outputs.tag }}
+        run: |
+          set -euo pipefail
+          git fetch --tags --force origin "refs/tags/${TAG_NAME}:refs/tags/${TAG_NAME}"
+
+      - name: Verify tag/whitepaper version alignment (strict)
+        shell: bash
+        env:
+          TAG_NAME: ${{ steps.meta.outputs.tag }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import os, re
-          from pathlib import Path
+          import os, re, subprocess
           tag = os.environ["TAG_NAME"]
           if not re.fullmatch(r"v\d+\.\d+\.\d+", tag):
               raise SystemExit(f"Invalid tag format: {tag!r} (expected vX.Y.Z)")
-          tex = Path("whitepaper/WHITEPAPER.tex").read_text(encoding="utf-8")
+          tex = subprocess.check_output(
+              ["git", "show", f"{tag}:whitepaper/WHITEPAPER.tex"],
+              text=True,
+          )
           m = re.search(r"\\newcommand\{\\DuraShareVersion\}\{([^}]+)\}", tex)
           if not m:
-              raise SystemExit("Missing \\DuraShareVersion macro in whitepaper/WHITEPAPER.tex")
+              m = re.search(r"\\newcommand\{\\SchiavinatoSharingVersion\}\{([^}]+)\}", tex)
+          if not m:
+              raise SystemExit("Missing version macro in tagged whitepaper/WHITEPAPER.tex")
           version = m.group(1).strip()
           if version != tag:
               raise SystemExit(f"Tag/whitepaper mismatch: tag={tag!r} whitepaper={version!r}")
           print(f"OK: tag={tag} whitepaper={version}")
           PY
-          echo "tag=${TAG_NAME}" >> "$GITHUB_OUTPUT"
 
-      - name: Verify published release assets
+      - name: Verify published release assets, signatures, and checksums
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           TAG_NAME: ${{ steps.meta.outputs.tag }}
         run: |
           set -euo pipefail
-          expected=(
-            "WHITEPAPER.pdf"
-            "WHITEPAPER.pdf.asc"
-            "WHITEPAPER-${TAG_NAME}.pdf"
-            "WHITEPAPER-${TAG_NAME}.pdf.asc"
-            "CHECKSUMS.txt"
-            "CHECKSUMS.txt.asc"
-          )
-          for f in "${expected[@]}"; do
-            gh release view "${TAG_NAME}" --repo "${GITHUB_REPOSITORY}" --json assets --jq '.assets[].name' | grep -Fx -- "${f}" >/dev/null
-          done
+          chmod +x scripts/verify-published-release.sh scripts/verify-checksums.sh
+          ./scripts/verify-published-release.sh "${TAG_NAME}"
