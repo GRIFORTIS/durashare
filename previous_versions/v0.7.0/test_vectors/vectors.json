@@ -1,9 +1,9 @@
 {
-  "version": "v0.7.1",
+  "version": "v0.7.0",
   "generated": "2026-07-23T19:22:00Z",
   "notes": [
     "Public test vectors for interoperability testing only. Never use these mnemonic words, coefficients, Session Batch IDs, MAT keys, or DRKs for real funds.",
-    "Publication v0.7.1. Vector IDs and payload bytes are unchanged from the v0.7.0 set. Historical vectors must be read from previous_versions/."
+    "This v0.7.0 set replaces the live v0.6.0 vectors. Historical vectors must be read from previous_versions/."
   ],
   "vectors": [
     {

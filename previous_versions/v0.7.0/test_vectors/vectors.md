@@ -1,4 +1,4 @@
-# DuraShare - v0.7.1 Test Vectors
+# Schiavinato Sharing - v0.7.0 Test Vectors
 
 These public vectors are for interoperability testing only. Never use the mnemonic, coefficients, Session Batch IDs, MAT keys, DRKs, or derived values for real funds.
 
@@ -6,8 +6,7 @@ Machine-readable data lives in [`vectors.json`](vectors.json).
 
 ## Status
 
-- Publication version: `v0.7.1`
-- Protocol / vector IDs: `v0.7.0` (payload bytes unchanged)
+- Version: `v0.7.0`
 - Main fixture: `2-of-3`, 12-word BIP39 mnemonic
 - Profiles covered: Full and Compact
 - Audit features covered: RBT, Transport Hash, Manifest Audit Hash, dual MAT sample

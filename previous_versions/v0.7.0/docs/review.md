@@ -1,10 +1,10 @@
 # Review & Feedback
 
-DuraShare modifies existing, well-established cryptographic techniques for human-executable threshold backup. Reference implementations are thoroughly tested, published as-is, and have not been independently audited.
+Schiavinato Sharing is **experimental** and **not audited**.
 
-Technical feedback is welcome from cryptographers, wallet architects, implementers, custody practitioners, and people who have run real-world key-backup ceremonies.
+We welcome review from cryptographers, wallet architects, implementers, custody practitioners, and people who have run real-world key-backup ceremonies.
 
-Treat the whitepaper, `manual_spec/`, `software_spec/`, and `test_vectors/` as the primary review targets. Implementation repositories should declare explicit spec/vector support before being treated as conformant.
+Prototype implementations may lag the current specification. Treat the whitepaper, `manual_spec/`, `software_spec/`, and `test_vectors/` as the review targets. Implementation repositories should declare explicit spec/vector support before being treated as conformant.
 
 ## High-Value Review Targets
 
@@ -16,7 +16,7 @@ Treat the whitepaper, `manual_spec/`, `software_spec/`, and `test_vectors/` as t
 - **Full / Compact profiles**: Full complete-table serialization, Compact word-only serialization, Transport Hash omission in Compact, and paper-table recomputation requirements.
 - **Manual fallback**: recovery procedure, BIP39 language handling, out-of-range field-element rendering, Lagrange coefficients, and expected operator checkpoints.
 - **Threat model**: trusted devices/peripherals, assisted ceremonies, durable artifacts, inheritance scenarios, and denial/replacement attacks.
-- **Test vectors**: v0.7.1 publication of the v0.7.0 arithmetic, payload bytes, RBT, Transport Hash, Manifest Audit Hash, MAT, and recovery values.
+- **Test vectors**: v0.7.0 arithmetic, payload bytes, RBT, Transport Hash, Manifest Audit Hash, MAT, and recovery values.
 
 ## Secondary Review Targets
 
@@ -25,9 +25,9 @@ Treat the whitepaper, `manual_spec/`, `software_spec/`, and `test_vectors/` as t
 - **Printer/output tiers**: whether secret-bearing and non-secret-but-sensitive output boundaries are understandable.
 - **Recursive composition**: whether layer semantics, metadata, and MAT independence are clear.
 
-## Out of Scope Here
+## Out of Scope for First Review Pass
 
-- Treating non-conformant implementations as references.
+- Treating prototype implementations as conformant references.
 - Operational deployment recommendations for real funds.
 - UI polish unrelated to safety, recoverability, or auditability.
 - Hardware manufacturing details for manual RNG tools.
@@ -45,4 +45,4 @@ Pull requests are welcome for `manual_spec/`, `software_spec/`, `test_vectors/`,
 
 ## Proposal-First for Behavior Changes
 
-If you propose a protocol behavior change, start with a proposal in [`../proposals/`](../proposals/).
+If you propose a protocol behavior change, start with a proposal in [`../../../proposals/`](../../../proposals/).

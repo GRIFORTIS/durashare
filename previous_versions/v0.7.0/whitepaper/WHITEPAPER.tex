@@ -18,7 +18,7 @@
 \usepackage{array}
 
 % --- Version ---
-\newcommand{\DuraShareVersion}{v0.7.1}
+\newcommand{\SchiavinatoSharingVersion}{v0.7.0}
 
 % --- Notation ---
 \newcommand{\GF}{\operatorname{GF}}
@@ -39,15 +39,15 @@
     linkcolor=blue,
     urlcolor=blue,
     citecolor=blue,
-    pdftitle={DuraShare: BIP39-Native Threshold Backup over GF(2053) with Full Manual Fallback and Per-Share Audit},
+    pdftitle={Schiavinato Sharing: BIP39-Native Threshold Backup over GF(2053) with Full Manual Fallback and Per-Share Audit},
     pdfauthor={Renato Schiavinato Lopez},
     pdfkeywords={threshold cryptography, secret sharing, BIP39, mnemonic backup, GF(2053), Shamir secret sharing}
 }
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small \textit{DuraShare \DuraShareVersion}}
-\fancyhead[R]{\small August 2026}
+\fancyhead[L]{\small \textit{Schiavinato Sharing \SchiavinatoSharingVersion}}
+\fancyhead[R]{\small July 2026}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
@@ -56,16 +56,15 @@
 \titlespacing{\subsubsection}{0pt}{10pt plus 4pt minus 2pt}{4pt plus 2pt minus 2pt}
 
 % --- Title ---
-\title{\textbf{DuraShare: BIP39-Native Threshold Backup over $\GF(2053)$ with Full Manual Fallback and Per-Share Audit}}
+\title{\textbf{Schiavinato Sharing: BIP39-Native Threshold Backup over $\GF(2053)$ with Full Manual Fallback and Per-Share Audit}}
 \author{
     \textbf{Renato Schiavinato Lopez} \\
     GRIFORTIS \\
     \texttt{renato@grifortis.com}
 }
-\date{August 2026\\\DuraShareVersion\thanks{%
+\date{July 2026\\\SchiavinatoSharingVersion\thanks{%
     Specification, test vectors, and in-progress prototype implementations:
-    \url{https://github.com/GRIFORTIS/durashare}.
-    This v0.7.1 publication is a brand and documentation revision of the v0.7.0 protocol (payload format \texttt{0x01}; test-vector bytes unchanged).
+    \url{https://github.com/GRIFORTIS/schiavinato-sharing}.
     Implementations are experimental, unaudited, and may lag the current specification.
     Responsible disclosure: \texttt{security@grifortis.com}.}}
 
@@ -77,7 +76,7 @@
 % ABSTRACT
 % ============================================================================
 \begin{abstract}
-Long-horizon self-custody needs backups that can survive lost devices, obsolete software, and unavailable vendors. DuraShare is a BIP39-native $k$-of-$n$ threshold backup scheme that applies standard Shamir sharing directly to BIP39 word indices over $\GF(2053)$, the smallest prime field containing the 2048-word list. The normal workflow is software-assisted on an offline device, but the stored artifacts remain recoverable from paper, pre-computed Lagrange coefficients, and ordinary modular arithmetic.
+Long-horizon self-custody needs backups that can survive lost devices, obsolete software, and unavailable vendors. Schiavinato Sharing is a BIP39-native $k$-of-$n$ threshold backup scheme that applies standard Shamir sharing directly to BIP39 word indices over $\GF(2053)$, the smallest prime field containing the 2048-word list. The normal workflow is software-assisted on an offline device, but the stored artifacts remain recoverable from paper, pre-computed Lagrange coefficients, and ordinary modular arithmetic.
 
 Each Share includes public consistency checks forming a distance-4 product-code layer: they detect every passive error pattern affecting up to three cells and give a unique single-cell repair candidate under an explicit single-error assumption. These checks catch arithmetic, transcription, damage, and share-number mistakes; they are not authentication against deliberate replacement.
 
@@ -105,11 +104,11 @@ The recommended deployment is human-first and software-assisted---an offline dev
 \subsection{Claim Scope and Non-Goals}
 \label{sec:claim-scope}
 
-DuraShare separates confidentiality, passive fault detection, and active substitution detection. The arithmetic layer is standard Shamir sharing over $\GF(2053)$ applied independently to BIP39 word indices. Its confidentiality claim is information-theoretic: any coalition holding fewer than $k$ arithmetic shares learns no information about the protected mnemonic beyond public parameters.
+Schiavinato Sharing separates confidentiality, passive fault detection, and active substitution detection. The arithmetic layer is standard Shamir sharing over $\GF(2053)$ applied independently to BIP39 word indices. Its confidentiality claim is information-theoretic: any coalition holding fewer than $k$ arithmetic shares learns no information about the protected mnemonic beyond public parameters.
 
 The row checksums, column checksums, and Global Integrity Check (GIC) form a linear consistency layer for passive faults: arithmetic mistakes, transcription errors, damaged cells, and accidental share-number mixups. This layer is not an authentication mechanism. An adversary who can rewrite a share can also recompute consistent linear checks. Active substitution is therefore handled through separate detection and custody layers: optional MAT for manual pre-recovery authentication, manifest audit hashes when an uncompromised manifest is available, protocol-input-bound warning checks after recovery, wallet-bound Recovery Verification Address (RVA) checks, artifact separation, and physical custody procedures. The protocol can flag inconsistent artifacts or wrong recovery results under stated assumptions; it cannot prevent replacement or destruction of physical or digital artifacts.
 
-\paragraph{BIP39 language and wallet identity.} BIP39 derives the seed from the mnemonic sentence, not from the index vector alone. The same sequence of word indices rendered through a different BIP39 wordlist language can therefore produce a valid-looking mnemonic that derives a different BIP32 wallet. DuraShare treats wordlist language as wallet-defining recovery context: in BIP39 mode, it is encoded in the Language/Input byte and included in the RBT canonical material. For manual fallback, the selected BIP39 wordlist language is also printed prominently on Share and Manifest headers. This prevents index-based ``translation'' across BIP39 languages from being treated as the same recovered protocol object. Pre-Encrypted Numeric Input is separate: the protocol shares externally encrypted field elements and outputs encrypted numeric symbols until the user decrypts them outside DuraShare.
+\paragraph{BIP39 language and wallet identity.} BIP39 derives the seed from the mnemonic sentence, not from the index vector alone. The same sequence of word indices rendered through a different BIP39 wordlist language can therefore produce a valid-looking mnemonic that derives a different BIP32 wallet. Schiavinato treats wordlist language as wallet-defining recovery context: in BIP39 mode, it is encoded in the Language/Input byte and included in the RBT canonical material. For manual fallback, the selected BIP39 wordlist language is also printed prominently on Share and Manifest headers. This prevents index-based ``translation'' across BIP39 languages from being treated as the same recovered protocol object. Pre-Encrypted Numeric Input is separate: the protocol shares externally encrypted field elements and outputs encrypted numeric symbols until the user decrypts them outside Schiavinato.
 
 The protocol does not protect against compromise of $k$ or more shares, compromised devices or peripherals that observe secret-bearing material, physical coercion, social engineering, loss or corruption of all recovery context, or errors in the underlying BIP39/wallet ecosystem. The fully manual fallback preserves implementation-independent recovery. Without MAT, its pre-recovery checks remain public consistency checks; without RVA, it also lacks a wallet-bound post-recovery witness.
 
@@ -119,7 +118,7 @@ The protocol also separates computation trust from artifact-production trust. Fo
 
 \subsection{Contributions}
 
-DuraShare makes the following contributions:
+Schiavinato Sharing makes the following contributions:
 
 \begin{enumerate}[noitemsep]
     \item \textbf{BIP39-native threshold-backup format:} a Shamir instantiation over $\GF(2053)$---the smallest prime greater than 2048---that operates directly on 1-indexed BIP39 word indices, preserving standard BIP39 input/output without custom share alphabets or opaque seed transforms.
@@ -165,7 +164,7 @@ A Linear Secret Sharing Scheme (LSSS)~\cite{beimel2011} is one where share value
 
 Product codes, introduced by Elias~\cite{elias1954}, construct a larger block code by arranging symbols in a rectangular array and requiring every row and every column to be a codeword of smaller component codes. If the component codes have minimum distances $d_1$ and $d_2$, the product code has minimum distance $d_1 d_2$. The graphical view of such constraints as a bipartite relation between symbol nodes and check nodes is a Tanner-graph representation~\cite{tanner1981}; in matrix form, it is simply a parity-check matrix for a linear code.
 
-The simplest component code is a single-parity-check (SPC) code, an $[m,m{-}1,2]$ linear code over the relevant field. A two-dimensional SPC product code is the familiar row-and-column parity construction: data symbols occupy a rectangle, parity symbols complete each row and column, and the final corner is the parity of the parity symbols. DuraShare uses a $q$-ary version of this construction over $q=2053$, with public affine offsets for row labels, column labels, and share-index binding.
+The simplest component code is a single-parity-check (SPC) code, an $[m,m{-}1,2]$ linear code over the relevant field. A two-dimensional SPC product code is the familiar row-and-column parity construction: data symbols occupy a rectangle, parity symbols complete each row and column, and the final corner is the parity of the parity symbols. Schiavinato Sharing uses a $q$-ary version of this construction over $q=2053$, with public affine offsets for row labels, column labels, and share-index binding.
 
 \subsection{BIP39 Mnemonics}
 
@@ -173,11 +172,11 @@ A BIP39 mnemonic~\cite{bip39} encodes cryptographic entropy as a sequence of $\e
 
 \subsection{Related Work}
 
-Multi-Party Computation (MPC) wallets, multisignature schemes, and smart contract social recovery~\cite{buterin} address \emph{operational security} for active asset management. DuraShare addresses a different problem: \emph{cold storage and disaster recovery}---how to keep threshold recovery available across long time horizons without permanently binding that recovery to one software stack. The comparisons below are therefore limited to threshold backup schemes for stored secrets.
+Multi-Party Computation (MPC) wallets, multisignature schemes, and smart contract social recovery~\cite{buterin} address \emph{operational security} for active asset management. Schiavinato Sharing addresses a different problem: \emph{cold storage and disaster recovery}---how to keep threshold recovery available across long time horizons without permanently binding that recovery to one software stack. The comparisons below are therefore limited to threshold backup schemes for stored secrets.
 
 Existing threshold backup systems vary along several axes relevant here: whether the recovered secret is native BIP39, whether the original BIP39 wordlist language is preserved as wallet context, whether the share representation admits a specified non-software recovery path, which error-detection mechanisms are available during recovery, and whether the scheme supports per-share pre-recovery verification and post-recovery protocol-input or wallet-bound verification.
 
-\paragraph{Manual-capable schemes.} Codex32~\cite{codex32} (BIP-93) uses BCH error-correction codes and paper computation wheels (volvelles), providing strong manual error handling but requiring non-BIP39 encoding and a more specialized paper procedure. SeedXOR~\cite{seedxor} offers a simpler mental model and standard mnemonic output, but remains inherently $n$-of-$n$ and provides weak error detection. Table~\ref{tab:manual} compares these schemes with DuraShare on the dimensions most relevant to long-horizon paper recovery.
+\paragraph{Manual-capable schemes.} Codex32~\cite{codex32} (BIP-93) uses BCH error-correction codes and paper computation wheels (volvelles), providing strong manual error handling but requiring non-BIP39 encoding and a more specialized paper procedure. SeedXOR~\cite{seedxor} offers a simpler mental model and standard mnemonic output, but remains inherently $n$-of-$n$ and provides weak error detection. Table~\ref{tab:manual} compares these schemes with Schiavinato Sharing on the dimensions most relevant to long-horizon paper recovery.
 
 \begin{table}[H]
 \centering
@@ -186,7 +185,7 @@ Existing threshold backup systems vary along several axes relevant here: whether
 \small
 \begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Feature} & \textbf{DuraShare} & \textbf{Codex32} & \textbf{SeedXOR} \\ \midrule
+\textbf{Feature} & \textbf{Schiavinato} & \textbf{Codex32} & \textbf{SeedXOR} \\ \midrule
 Primary scope & BIP39 & Bitcoin/BIP32 only & BIP39 \\
 Threshold flexibility & Full $k$-of-$n$ & $k$-of-$n$ ($k \leq 9$, $n \leq 31$) & $n$-of-$n$ only \\
 Manual procedure & Integer arithmetic mod 2053 & BCH + volvelles/tables & XOR \\
@@ -215,7 +214,7 @@ $\ddagger$ RVA: truncated wallet address compared after recovery, using offline 
 \footnotesize
 \begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Feature} & \textbf{DuraShare} & \textbf{SLIP39} & \textbf{SSKR} \\ \midrule
+\textbf{Feature} & \textbf{Schiavinato} & \textbf{SLIP39} & \textbf{SSKR} \\ \midrule
 Arithmetic domain & Prime $\GF(2053)$\textsuperscript{$\ast$} & $\GF(2^8)$ + RS1024 checksum & Extension $\GF(2^8)$ \\
 Wallet compatibility & Native BIP39 & Different KDF & Full round-trip \\
 BIP39 language context & Explicit; RBT-bound & N/A & External \\
@@ -236,7 +235,7 @@ $\ddagger$ RBT verifies the recovered protocol object (${\sim}2^{96}$ Full/${\si
 
 \paragraph{Information-theoretic authentication.} MAT instantiates the Wegman--Carter pattern~\cite{wegmancarter1981}: a universal hash selected by secret random weights and masked by a fresh one-time field pad. For a changed three-element row, verification reduces to one nontrivial linear equation in the hidden weight vector, giving a worst-case false-accept bound of $1/|\GF(2053)|$ per independent tag column.
 
-\paragraph{Small-field secret sharing under partial leakage.} A separate line of work studies what happens when Shamir's secrecy assumption is relaxed: instead of an adversary holding fewer than $k$ full shares, the adversary observes additional bounded side-channel leakage from the remaining shares. Guruswami and Wootters~\cite{guruswamiwootters2016} showed that Reed-Solomon reconstruction techniques translate into local-leakage attacks on Shamir secret sharing over characteristic-2 fields, making it insecure under even one bit of leakage per share. Benhamouda, Degwekar, Ishai, and Rabin~\cite{benhamouda2018} initiated the corresponding positive theory for prime-order fields; subsequent work by Maji, Nguyen, Paskin-Cherniavsky, Suad, and Wang~\cite{maji2021}, by Klein and Komargodski~\cite{klein2023}, and by Maji et al.~\cite{maji2025} progressively tightened the leakage-resilience thresholds and identified attack structures that depend on the reconstruction threshold $k$ and on the residue $|F| \bmod k$. These results inform the structured-leakage discussion in Section~\ref{sec:llr}, even though DuraShare's threat model (Section~\ref{sec:threat-model}) excludes the physical-bit side-channel scenarios these works target. The prime-field choice $\GF(2053)$ is structurally on the favorable side of the characteristic-2 versus prime-field dichotomy in this literature.
+\paragraph{Small-field secret sharing under partial leakage.} A separate line of work studies what happens when Shamir's secrecy assumption is relaxed: instead of an adversary holding fewer than $k$ full shares, the adversary observes additional bounded side-channel leakage from the remaining shares. Guruswami and Wootters~\cite{guruswamiwootters2016} showed that Reed-Solomon reconstruction techniques translate into local-leakage attacks on Shamir secret sharing over characteristic-2 fields, making it insecure under even one bit of leakage per share. Benhamouda, Degwekar, Ishai, and Rabin~\cite{benhamouda2018} initiated the corresponding positive theory for prime-order fields; subsequent work by Maji, Nguyen, Paskin-Cherniavsky, Suad, and Wang~\cite{maji2021}, by Klein and Komargodski~\cite{klein2023}, and by Maji et al.~\cite{maji2025} progressively tightened the leakage-resilience thresholds and identified attack structures that depend on the reconstruction threshold $k$ and on the residue $|F| \bmod k$. These results inform the structured-leakage discussion in Section~\ref{sec:llr}, even though Schiavinato Sharing's threat model (Section~\ref{sec:threat-model}) excludes the physical-bit side-channel scenarios these works target. The prime-field choice $\GF(2053)$ is structurally on the favorable side of the characteristic-2 versus prime-field dichotomy in this literature.
 
 % ============================================================================
 % 3. SYSTEM MODEL AND THREAT MODEL
@@ -246,7 +245,7 @@ $\ddagger$ RBT verifies the recovered protocol object (${\sim}2^{96}$ Full/${\si
 
 \subsection{Deployment Model}
 
-DuraShare has one arithmetic layer and several operational profiles. Full is the recommended Output Profile for long-term, high-value custody: an offline tool generates the shares, encodes the digital envelope with a transport hash and a longer protocol-input-bound tag, and renders the artifacts intended for storage. Compact uses a smaller QR payload for constrained-output ceremonies where QR size, small displays, or hand transcription materially dominate operational risk. Manual recovery, and at the extreme, full manual sharing, are specified as fallback procedures for situations in which software is unavailable, incompatible, or untrusted.
+Schiavinato Sharing has one arithmetic layer and several operational profiles. Full is the recommended Output Profile for long-term, high-value custody: an offline tool generates the shares, encodes the digital envelope with a transport hash and a longer protocol-input-bound tag, and renders the artifacts intended for storage. Compact uses a smaller QR payload for constrained-output ceremonies where QR size, small displays, or hand transcription materially dominate operational risk. Manual recovery, and at the extreme, full manual sharing, are specified as fallback procedures for situations in which software is unavailable, incompatible, or untrusted.
 
 Full and Compact are Output Profiles; both can produce either printed or hand-transcribed artifacts. Compact's smaller QR grid (V3, 29$\times$29 versus V5--6, 37$\times$37--41$\times$41) is motivated not only by payload size but by constrained-output environments---such as small-display air-gapped devices or ceremonies where manual QR transcription is required---in which a smaller grid materially reduces hand-mark burden (Section~\ref{sec:qr-workload}).
 
@@ -259,7 +258,7 @@ Independently of the artifact-production path, when no trusted computation devic
 \subsection{Artifact Classes and Metadata Scope}
 \label{sec:artifact-boundary}
 
-The security claims in DuraShare apply to different data with different scopes. These classes do not create additional document types: MAT fields remain on the Share and Manifest. We distinguish:
+The security claims in Schiavinato Sharing apply to different data with different scopes. These classes do not create additional document types: MAT fields remain on the Share and Manifest. We distinguish:
 \begin{enumerate}[noitemsep]
     \item \textbf{Arithmetic share layer:} the $\GF(2053)$ word-share values together with the derived row checksums, column checksums, and share-bound GIC. This is the object covered by Proposition~\ref{prop:conf}.
     \item \textbf{Share-local recovery metadata:} human-readable hints such as label/date, derivation hint, passphrase-required indicator, and RVA. These items do not participate in the sharing arithmetic. Their role is operational and post-recovery verification. Because computational formats encode at most a coarse wallet class, deployments that rely on RVA-based verification require enough wallet-context information to be recoverable from any valid threshold set rather than only from a separate non-threshold record. In the recommended computational deployment, this means replicating the RVA together with a minimal wallet-context hint on each share artifact, while treating any manifest copy as secondary.
@@ -862,7 +861,7 @@ In manual fallback, MAT provides the pre-recovery substitution check when select
 
 Proposition~\ref{prop:conf} establishes information-theoretic confidentiality for any $t < k$ shares of the arithmetic layer in the textbook secret-sharing model. This subsection positions the $\GF(2053)$ choice within the local-leakage-resilience (LLR) literature~\cite{benhamouda2018,maji2021,klein2023,maji2025} and summarizes the protocol element that sits outside the unrestricted arithmetic layer: DRK-based deterministic coefficient derivation. Scenarios in which the adversary additionally observes partial-share side-channel leakage from honest custodians remain out of scope of this paper's threat model (Section~\ref{sec:threat-model}, assumption~(1)).
 
-\paragraph{LLR framework.} The local leakage model considers an adversary that holds $t < k$ full shares and additionally observes a bounded leakage function $\mathrm{Leak}_i : \GF(p) \to \{0,1\}^m$ applied independently to each of the remaining $n - t$ honest shares. For Shamir over prime-order $\GF(p)$ with random evaluation places, Benhamouda et al.~\cite{benhamouda2018} proved leakage resilience for reconstruction-threshold ratios in a high regime; subsequent work by Maji et al.~\cite{maji2021,maji2025} and by Klein and Komargodski~\cite{klein2023} progressively reduced the required ratio, with the strongest results favoring high $t/n$. Over characteristic-2 fields, Reed-Solomon reconstruction techniques due to Guruswami and Wootters~\cite{guruswamiwootters2016} render Shamir secret sharing insecure even at $m = 1$ bit of leakage per share. The prime-field choice $\GF(2053)$ in DuraShare is structurally on the favorable side of this dichotomy: none of the characteristic-2 attack family applies. As an empirical deployment data point, two widely used BIP39-adjacent threshold schemes operating over even smaller fields---SLIP-39~\cite{slip39} (in production at SatoshiLabs/Trezor since 2019) and SSKR~\cite{sskr} (Blockchain Commons, since 2020), both over $\GF(2^8)$---have seen substantial production use without a published standard-model break, consistent with the threshold-agnostic, field-size-independent secrecy claim of Proposition~\ref{prop:conf}.
+\paragraph{LLR framework.} The local leakage model considers an adversary that holds $t < k$ full shares and additionally observes a bounded leakage function $\mathrm{Leak}_i : \GF(p) \to \{0,1\}^m$ applied independently to each of the remaining $n - t$ honest shares. For Shamir over prime-order $\GF(p)$ with random evaluation places, Benhamouda et al.~\cite{benhamouda2018} proved leakage resilience for reconstruction-threshold ratios in a high regime; subsequent work by Maji et al.~\cite{maji2021,maji2025} and by Klein and Komargodski~\cite{klein2023} progressively reduced the required ratio, with the strongest results favoring high $t/n$. Over characteristic-2 fields, Reed-Solomon reconstruction techniques due to Guruswami and Wootters~\cite{guruswamiwootters2016} render Shamir secret sharing insecure even at $m = 1$ bit of leakage per share. The prime-field choice $\GF(2053)$ in Schiavinato Sharing is structurally on the favorable side of this dichotomy: none of the characteristic-2 attack family applies. As an empirical deployment data point, two widely used BIP39-adjacent threshold schemes operating over even smaller fields---SLIP-39~\cite{slip39} (in production at SatoshiLabs/Trezor since 2019) and SSKR~\cite{sskr} (Blockchain Commons, since 2020), both over $\GF(2^8)$---have seen substantial production use without a published standard-model break, consistent with the threshold-agnostic, field-size-independent secrecy claim of Proposition~\ref{prop:conf}.
 
 \paragraph{Structured metadata versus general leakage.} The general LLR theorems above bound resilience against \emph{arbitrary} leakage functions. The protocol elements below are not arbitrary physical leakage functions; they are fixed, publicly specified metadata or derivation choices whose consequences can be bounded directly.
 \begin{itemize}[noitemsep]
@@ -870,7 +869,7 @@ Proposition~\ref{prop:conf} establishes information-theoretic confidentiality fo
     \item \textbf{Hand-Transcribed QR (DRK resume).} Coefficients are derived deterministically from a 256-bit Deterministic Resume Key via HMAC-SHA256 (Section~\ref{sec:assisted-ceremony}). This is not local leakage from shares; it is structured computational coefficient generation. Under the standard PRF assumption for HMAC-SHA256~\cite{rfc2104}, the resulting coefficients are computationally indistinguishable from the True Random distribution. This shifts the secrecy claim for this resume mode from information-theoretic to computational, with a distinguishing advantage bounded by the PRF security parameter ($\approx 2^{-256}$ classically, with a post-quantum key-search margin of $\approx 2^{-128}$ via Grover search on the DRK).
 \end{itemize}
 
-\paragraph{Composition across nested layers.} DuraShare supports recursive composition (Section~\ref{sec:nesting}). Each layer is an independent Shamir instance over $\GF(2053)$ with independent coefficient randomness and, when selected, independent MAT keys. The digital envelope caps active nesting at 4 layers (Full) or 2 layers (Compact). Metadata risks compose operationally across layers: more Manifest sections, session identifiers, Audit Hashes, and custody notes improve administration but increase targeting and recovery-sabotage surface. Deployments that require maximum confidentiality of metadata should minimize Manifest contents and store Manifests separately from all Shares.
+\paragraph{Composition across nested layers.} Schiavinato Sharing supports recursive composition (Section~\ref{sec:nesting}). Each layer is an independent Shamir instance over $\GF(2053)$ with independent coefficient randomness and, when selected, independent MAT keys. The digital envelope caps active nesting at 4 layers (Full) or 2 layers (Compact). Metadata risks compose operationally across layers: more Manifest sections, session identifiers, Audit Hashes, and custody notes improve administration but increase targeting and recovery-sabotage surface. Deployments that require maximum confidentiality of metadata should minimize Manifest contents and store Manifests separately from all Shares.
 
 \paragraph{Threshold-modular structure of one physical-bit attack.} Maji et al.~\cite{maji2021} exhibit a specific physical-bit attack at $m = 1$ bit of leakage per share whose attack structure depends on the residue $|F| \bmod k$ being equal to $1$. For $\GF(2053)$:
 \[
@@ -894,7 +893,7 @@ The information-theoretic confidentiality of Proposition~\ref{prop:conf} holds a
 
 \paragraph{Recovery Verification Address.} The RVA inherits the cryptographic properties of the protected wallet ecosystem (e.g., the Bitcoin bech32/bech32m address derivation~\cite{bip173,bip350}). It is not an independent cryptographic primitive of this protocol; its post-quantum behavior reduces to that of the underlying wallet chain.
 
-\paragraph{Out of scope.} The post-quantum security of the BIP39-derived wallet itself---most notably the ECDSA/EdDSA signing keys whose underlying discrete-logarithm and factoring problems are broken by Shor's algorithm~\cite{shor1994} on a sufficiently capable quantum computer---is a downstream property of the wallet ecosystem, not of this protocol. DuraShare does not introduce its own quantum-vulnerable primitives beyond those enumerated above, and it does not solve or alter the quantum status of the secret it protects.
+\paragraph{Out of scope.} The post-quantum security of the BIP39-derived wallet itself---most notably the ECDSA/EdDSA signing keys whose underlying discrete-logarithm and factoring problems are broken by Shor's algorithm~\cite{shor1994} on a sufficiently capable quantum computer---is a downstream property of the wallet ecosystem, not of this protocol. Schiavinato Sharing does not introduce its own quantum-vulnerable primitives beyond those enumerated above, and it does not solve or alter the quantum status of the secret it protects.
 
 \paragraph{Net status.} The arithmetic Share layer with true-random coefficients (Proposition~\ref{prop:conf}) is unconditionally secure against quantum adversaries, and MAT is information-theoretic under its key-custody assumptions. DRK resume mode replaces true-random coefficient storage with PRF-derived coefficients and therefore relies on HMAC-SHA256 pseudorandomness; Transport Hash, RBT, and Manifest Audit Hash remain operational verification mechanisms, not the basis of arithmetic secrecy. The dominant long-horizon quantum exposure lies in the protected wallet ecosystem rather than in the sharing layer.
 
@@ -940,7 +939,7 @@ Sharing + dual MAT, Split-Key Manifest & 4 h 39 min & 11 h 44 min & 13 / 20 min\
 
 The observed recovery runs were substantially shorter than fully manual sharing: approximately 30--60 minutes end-to-end, with row-level checkpoints of about 4--5 minutes. These timings support the intended continuity property: emergency recovery remains feasible from durable artifacts and modular arithmetic, while fully manual sharing is more demanding, normally planned, and naturally checkpointed after random generation, each row, each Share, Manifest work, and cleanup. Controlled third-party usability testing remains necessary.
 
-\paragraph{Qualitative QR transcription context.} As a qualitative reference point, the author has repeatedly hand-transcribed SeedSigner-style QR codes from a Raspberry Pi Zero display with 240$\times$240 pixels and successfully decoded the resulting QRs. This is not a controlled experiment and does not substitute for DuraShare-specific usability testing, but it informs the design assumption that hand-copying compact QR grids from small air-gapped displays can be operationally feasible when aided by templates and validation. The error rate, time cost, and fatigue profile for DuraShare-specific payloads remain to be measured.
+\paragraph{Qualitative QR transcription context.} As a qualitative reference point, the author has repeatedly hand-transcribed SeedSigner-style QR codes from a Raspberry Pi Zero display with 240$\times$240 pixels and successfully decoded the resulting QRs. This is not a controlled experiment and does not substitute for Schiavinato-specific usability testing, but it informs the design assumption that hand-copying compact QR grids from small air-gapped displays can be operationally feasible when aided by templates and validation. The error rate, time cost, and fatigue profile for Schiavinato-specific payloads remain to be measured.
 
 \paragraph{Manual entropy generation.} Manual generation of $\GF(2053)$ elements can use a $6 \times 7 \times 7 \times 7 = 2058$ mixed-radix rejection sampler. DuraDice-39 is the specialized physical implementation: four marked rods generate one outcome in $\{0,\ldots,2057\}$, with visual rejection before summation. A low-cost DIY implementation uses four opaque bags and four matching token sets with pre-weighted values, for example poker chips, bottle caps, or cardboard disks marked with tape or ink. Under the physical assumption that each draw is uniform over tokens that are indistinguishable by touch and sufficiently uniform in size, weight, and texture within the same bag, the DIY method samples the same distribution as the specialized hardware. In either implementation, reject the five outcomes $2053,\ldots,2057$; the accepted value is then uniform in $\GF(2053)$.
 
@@ -999,7 +998,7 @@ The present manuscript should therefore be read as an analysis of a promising de
 \section{Conclusion}
 \label{sec:conclusion}
 
-DuraShare targets a specific point in the self-custody design space: a BIP39-native threshold-backup format for cold storage and disaster recovery. Its arithmetic layer instantiates standard Shamir sharing directly over 1-indexed BIP39 word indices in $\GF(2053)$, preserving standard BIP39 input and output without custom share alphabets, seed transforms, or permanent dependence on a particular software stack.
+Schiavinato Sharing targets a specific point in the self-custody design space: a BIP39-native threshold-backup format for cold storage and disaster recovery. Its arithmetic layer instantiates standard Shamir sharing directly over 1-indexed BIP39 word indices in $\GF(2053)$, preserving standard BIP39 input and output without custom share alphabets, seed transforms, or permanent dependence on a particular software stack.
 
 The recommended operational path is human-first and software-assisted: software performs arithmetic, validates intermediate state, guides artifact handling, and supports recovery when available and trusted. The continuity property is that recovery remains implementation-independent. A valid threshold set can recover the mnemonic from durable artifacts and modular arithmetic alone. Optional MAT adds a calculator-verifiable, pre-recovery substitution check without changing that recovery path.
 
@@ -1014,7 +1013,7 @@ This manuscript is offered as an applied-cryptography design for review, replica
 % ============================================================================
 \section*{Acknowledgments}
 
-The author acknowledges Adi Shamir's foundational 1979 secret sharing scheme~\cite{shamir1979}, the BIP39 standard~\cite{bip39}, and analysis of existing schemes (SLIP39, SSKR, Codex32, SeedXOR) that informed this design. The author thanks Jean Martina (LabSEC, INE--UFSC), whose review of an earlier version identified active recovery sabotage and share substitution as the protocol's principal operational risks. His initial observation that the protocol lacked a manual, pre-recovery way to validate shares directly motivated the design of the Manual Authentication Layer (MAT, Section~\ref{sec:mat}) for manual deployments and the Manifest Audit Hash (Section~\ref{sec:audit-drill}) for computational deployments. His feedback also directly prompted the Recovery Verification Address design (Section~\ref{sec:rva}), the explicit ``zero substitution detection'' statement for the linear consistency layer, and the separation of pre-recovery and post-recovery detection mechanisms (both in Section~\ref{sec:substitution}) in the current version. The author thanks Julio L\'opez (LASCA, IC--UNICAMP) for an informal remark that repeated Shamir sharing over a small prime field merited explicit leakage analysis; that comment prompted the local-leakage-resilience discussion in Section~\ref{sec:llr} and helped clarify the current Output Profile design. The author thanks Jeroen van de Graaf (DCC--ICEx--UFMG) for discussions on long-term key backup and manual feasibility, which prompted clearer presentation of the preliminary manual-fallback timing observations and the role of checkpointed workflows; and for suggesting that a user may intentionally pre-encrypt a mnemonic before entering it into DuraShare, which motivated the Pre-Encrypted Numeric Input mode for externally encrypted field-element payloads. The author thanks Edil Medeiros (ENE--UnB; Vinteum/Casa21) for clarifying the role of BIP39 wordlist language in wallet derivation, which prompted the BIP39 language component of the Language/Input byte and its incorporation into the Recovery Binding Tag canonical material. The author thanks jaonoctus (ZBD; Vinteum/Casa21) for instigating the pursuit of BCH codes' error-correction properties and possible protocol benefits. That prompt led to a study of BCH and Reed--Solomon constructions, to rejecting those families for the active protocol on complexity-to-benefit grounds, and to recognizing that the existing $d=4$ SPC product-code layer already has a correction property: it detects any 1-, 2-, or 3-cell passive error and uniquely corrects a single-cell error under an explicit single-error assumption, now stated as Theorem~\ref{thm:single-correction}. This work was developed independently without external funding. All errors remain the author's responsibility.
+The author acknowledges Adi Shamir's foundational 1979 secret sharing scheme~\cite{shamir1979}, the BIP39 standard~\cite{bip39}, and analysis of existing schemes (SLIP39, SSKR, Codex32, SeedXOR) that informed this design. The author thanks Jean Martina (LabSEC, INE--UFSC), whose review of an earlier version identified active recovery sabotage and share substitution as the protocol's principal operational risks. His initial observation that the protocol lacked a manual, pre-recovery way to validate shares directly motivated the design of the Manual Authentication Layer (MAT, Section~\ref{sec:mat}) for manual deployments and the Manifest Audit Hash (Section~\ref{sec:audit-drill}) for computational deployments. His feedback also directly prompted the Recovery Verification Address design (Section~\ref{sec:rva}), the explicit ``zero substitution detection'' statement for the linear consistency layer, and the separation of pre-recovery and post-recovery detection mechanisms (both in Section~\ref{sec:substitution}) in the current version. The author thanks Julio L\'opez (LASCA, IC--UNICAMP) for an informal remark that repeated Shamir sharing over a small prime field merited explicit leakage analysis; that comment prompted the local-leakage-resilience discussion in Section~\ref{sec:llr} and helped clarify the current Output Profile design. The author thanks Jeroen van de Graaf (DCC--ICEx--UFMG) for discussions on long-term key backup and manual feasibility, which prompted clearer presentation of the preliminary manual-fallback timing observations and the role of checkpointed workflows; and for suggesting that a user may intentionally pre-encrypt a mnemonic before entering it into Schiavinato Sharing, which motivated the Pre-Encrypted Numeric Input mode for externally encrypted field-element payloads. The author thanks Edil Medeiros (ENE--UnB; Vinteum/Casa21) for clarifying the role of BIP39 wordlist language in wallet derivation, which prompted the BIP39 language component of the Language/Input byte and its incorporation into the Recovery Binding Tag canonical material. The author thanks jaonoctus (ZBD; Vinteum/Casa21) for instigating the pursuit of BCH codes' error-correction properties and possible protocol benefits. That prompt led to a study of BCH and Reed--Solomon constructions, to rejecting those families for the active protocol on complexity-to-benefit grounds, and to recognizing that the existing $d=4$ SPC product-code layer already has a correction property: it detects any 1-, 2-, or 3-cell passive error and uniquely corrects a single-cell error under an explicit single-error assumption, now stated as Theorem~\ref{thm:single-correction}. This work was developed independently without external funding. All errors remain the author's responsibility.
 
 % ============================================================================
 % BIBLIOGRAPHY
@@ -1123,8 +1122,8 @@ RFC 2104, Feb. 1997. \url{https://www.rfc-editor.org/rfc/rfc2104}.
 
 \bibitem{schiavinato041}
 R. Schiavinato Lopez,
-\textit{Schiavinato Sharing v0.4.1} (historical name; now DuraShare), GRIFORTIS, 2025.
-Available at \url{https://github.com/GRIFORTIS/durashare}.
+\textit{Schiavinato Sharing v0.4.1}, GRIFORTIS, 2025.
+Available at \url{https://github.com/GRIFORTIS/schiavinato-sharing}.
 
 \bibitem{seedxor}
 Coinkite,
