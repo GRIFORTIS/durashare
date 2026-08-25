@@ -1,31 +1,11 @@
 # Changelog
 
-All notable changes to the DuraShare specification will be documented in this file.
+All notable changes to the Schiavinato Sharing specification will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
-## [0.7.1] - 2026-08-25
-
-v0.7.1 is a brand and documentation publication of the **v0.7.0 protocol**. Payload format `0x01`, vector IDs, and test-vector bytes are unchanged.
-
-### Changed
-- Renamed the protocol brand from **Schiavinato Sharing** to **DuraShare**. Brand-only: protocol lineage through v0.7.0, mathematics, and archived `previous_versions/` snapshots through v0.7.0 are unchanged. Canonical repositories renamed to `GRIFORTIS/durashare` (and `durashare-html` / `durashare-js` / `durashare-py`); old `schiavinato-sharing*` URLs redirect.
-- Renamed the public toy-model spreadsheet to `docs/DuraShare_Toy_Model.xlsx`.
-- Whitepaper, changelog, and live vector metadata version are `v0.7.1`. The published Latest GitHub Release PDF now uses the DuraShare name.
-
-### Fixed
-- Checksum verification helpers now fail closed: missing listed files, empty `CHECKSUMS.txt`, path traversal, unrecognized lines, and zero hashed entries are errors.
-- Release Verify now authenticates the six published assets against the pinned GRIFORTIS OpenPGP fingerprint, `CHECKSUMS.txt`, and matching PDF pair hashes, instead of checking filenames only.
-
-### Added
-- Public toy-model spreadsheet supporting the whitepaper examples (`docs/DuraShare_Toy_Model.xlsx`).
-- LLR uniformity and QR hand-transcription validation artifacts supporting the v0.7.0 whitepaper analysis.
-- Historical Reduced Mode design-rationale analysis archived under `previous_versions/v0.6.0/`.
-- Frozen `v0.7.0` archive under `previous_versions/v0.7.0/`, taken from the signed `v0.7.0` tag.
-- Non-normative protocol lifecycle overview diagram in the README (`docs/protocol-lifecycle.png`, SVG source retained).
 
 ## [0.7.0] - 2026-07-23
 
@@ -164,20 +144,19 @@ v0.7.1 is a brand and documentation publication of the **v0.7.0 protocol**. Payl
 - Vectors: `test_vectors/`
 
 ## Links
-- **Repository**: [durashare](https://github.com/GRIFORTIS/durashare)
-- **HTML implementation**: [durashare-html](https://github.com/GRIFORTIS/durashare-html)
-- **JavaScript/TypeScript implementation**: [durashare-js](https://github.com/GRIFORTIS/durashare-js)
-- **Python implementation**: [durashare-py](https://github.com/GRIFORTIS/durashare-py)
+- **Repository**: [schiavinato-sharing](https://github.com/GRIFORTIS/schiavinato-sharing)
+- **HTML implementation**: [schiavinato-sharing-html](https://github.com/GRIFORTIS/schiavinato-sharing-html)
+- **JavaScript/TypeScript implementation**: [schiavinato-sharing-js](https://github.com/GRIFORTIS/schiavinato-sharing-js)
+- **Python implementation**: [schiavinato-sharing-py](https://github.com/GRIFORTIS/schiavinato-sharing-py)
 - **Organization**: [GRIFORTIS](https://github.com/GRIFORTIS)
 
-[Unreleased]: https://github.com/GRIFORTIS/durashare/compare/v0.7.1...HEAD
-[0.7.1]: https://github.com/GRIFORTIS/durashare/compare/v0.7.0...v0.7.1
-[0.7.0]: https://github.com/GRIFORTIS/durashare/compare/v0.6.0...v0.7.0
-[0.6.0]: https://github.com/GRIFORTIS/durashare/compare/v0.5.0...v0.6.0
-[0.5.0]: https://github.com/GRIFORTIS/durashare/compare/v0.4.1...v0.5.0
-[0.4.1]: https://github.com/GRIFORTIS/durashare/compare/v0.4.0...v0.4.1
-[0.4.0]: https://github.com/GRIFORTIS/durashare/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/GRIFORTIS/durashare/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/GRIFORTIS/durashare/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/GRIFORTIS/durashare/releases/tag/v0.1.0
+[Unreleased]: https://github.com/GRIFORTIS/schiavinato-sharing/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/GRIFORTIS/schiavinato-sharing/compare/v0.6.0...v0.7.0
+[0.6.0]: https://github.com/GRIFORTIS/schiavinato-sharing/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/GRIFORTIS/schiavinato-sharing/compare/v0.4.1...v0.5.0
+[0.4.1]: https://github.com/GRIFORTIS/schiavinato-sharing/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/GRIFORTIS/schiavinato-sharing/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/GRIFORTIS/schiavinato-sharing/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/GRIFORTIS/schiavinato-sharing/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/GRIFORTIS/schiavinato-sharing/releases/tag/v0.1.0
 
