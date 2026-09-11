@@ -182,6 +182,7 @@ Dated public discussion of the protocol. This is not an endorsement.
 - 2026-08-20 - [Brasília BitDevs, Seminário Socrático 032](https://bitdevs.bsb.br/2026-08-20-socratic-seminar-032) - protocol presentation and call for feedback
 - 2026-08-21 - [Curitiba BitDevs, Seminário Socrático 017](https://curitibabitdevs.org/2026-08-21-socratic-seminar-017) - protocol presentation and call for feedback
 - 2026-08-27 - [Criptografia pós-quântica e backup distribuído de seed phrases](https://www.meetup.com/belo-horizonte-bitdevs/events/316023535/) - lecture presented by Prof. Jeroen van de Graaf at UFMG, followed by protocol discussion, Manual Sharing and Recovery demo with Renato Schiavinato Lopez and Q&A
+- 2026-09-10 - [👨‍💻 Workshop Casa21 - DuraShare: Autocustódia de um jeito diferente](https://app.evento.so/e/evt_urp7zhHNiAhW3WM8) - workshop to present DuraShare in Software (HTML) and to run a toy model of a 3-of-5 Sharing and Recovery by hand.
 
 ## People
 
