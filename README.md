@@ -191,10 +191,10 @@ Upcoming:
 
 ### Renato Schiavinato Lopez — Founder & Protocol Author
 - Creator of DuraShare.
-- [LinkedIn](https://www.linkedin.com/in/renato-agile-coach/) · [GitHub](https://github.com/renatoslopes)
+- [LinkedIn](https://www.linkedin.com/in/renato-agile-coach/) · [GitHub](https://github.com/renatoslopes) · [Twitter/X (@renatoslopes)](https://x.com/renatoslopes)
 
 ### Jeroen van de Graaf — Chief Scientist; Advisory Board
-- Professor, DCC–UFMG. Cryptographer (ZK, MPC, privacy, applied protocols); PhD, Université de Montréal (1997).
+- Professor, DCC–UFMG. Cryptographer (ZK, MPC, privacy, voting systems, applied protocols); PhD, Université de Montréal (1997).
 - [DCC/UFMG](https://dcc.ufmg.br/professor/jeroen-van-de-graaf/) · [DBLP](https://dblp.org/pid/27/6925.html) · [Lattes](http://lattes.cnpq.br/0069989873499216) · [Google Scholar](https://scholar.google.com.br/citations?user=-w8olWwAAAAJ)
 
 ## Licenses
