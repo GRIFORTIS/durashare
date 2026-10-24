@@ -150,6 +150,12 @@ SLIP39 and SSKR are built for software-led recovery. Both use sound finite-field
 - **Standing review guide**: [`docs/review`](docs/review.md)
 - **Proposals**: [`proposals/`](proposals/)
 
+## Research publication
+
+- **Academic paper**: [DuraShare: BIP39-native secret sharing with full manual fallback](https://eprint.iacr.org/2026/2300) — Jeroen van de Graaf and Renato Schiavinato Lopez.
+
+The paper presents the research foundations of DuraShare and discusses constructions and variants that may not be part of the current normative protocol. For the currently supported protocol, consult the manual/software specifications and test vectors above.
+
 ## Implementations
 Reference implementations may lag the current specification. Treat each repository as conformant only when it explicitly declares support for the current spec and vectors:
 - **HTML (single-file, air-gapped)**: [`durashare-html`](https://github.com/GRIFORTIS/durashare-html)
@@ -182,10 +188,9 @@ Dated public discussion of the protocol. This is not an endorsement.
 - 2026-08-20 - [Brasília BitDevs, Seminário Socrático 032](https://bitdevs.bsb.br/2026-08-20-socratic-seminar-032) - protocol presentation and call for feedback
 - 2026-08-21 - [Curitiba BitDevs, Seminário Socrático 017](https://curitibabitdevs.org/2026-08-21-socratic-seminar-017) - protocol presentation and call for feedback
 - 2026-08-27 - [Criptografia pós-quântica e backup distribuído de seed phrases](https://www.meetup.com/belo-horizonte-bitdevs/events/316023535/) - lecture presented by Prof. Jeroen van de Graaf at UFMG, followed by protocol discussion, Manual Sharing and Recovery demo with Renato Schiavinato Lopez and Q&A
-- 2026-09-10 - [👨‍💻 Workshop Casa21 - DuraShare: Autocustódia de um jeito diferente](https://app.evento.so/e/evt_urp7zhHNiAhW3WM8) - workshop to present DuraShare in Software (HTML) and to run a toy model of a 3-of-5 Sharing and Recovery by hand
-
-Upcoming:
-- 2026-10-13 - [Workshop DuraShare at TABConf 8](https://github.com/TABConf/8.tabconf.com/issues/26) - create, audit and recover a Shamir backup using software and manually (pen, paper and calculator)
+- 2026-09-10 - [👨‍💻 Workshop Casa21 - DuraShare: Autocustódia de um jeito diferente](https://app.evento.so/e/evt_urp7zhHNiAhW3WM8) - workshop presented DuraShare in Software (HTML) and ran a toy model of a 3-of-5 Sharing and Recovery by hand. All 4 participants were able to complete the full task.
+- 2026-10-13 - [Workshop DuraShare at TABConf 8](https://github.com/TABConf/8.tabconf.com/issues/26) - workshop presented DuraShare in Software (HTML), including Share Audit with the Transport Hash and Manual Authentication Tag (MAT), and manually shared a complete 3-of-5 DuraShare row (3 words plus checksum) into five shares with checksum validation. Participants recovered the row from shares 1, 2, and 3 with 100% success; a deliberately preserved live transcription error was detected by the checksum.
+- 2026-10-15 - [DuraShare Challenge at TABConf 8](https://x.com/renatoslopes/status/2110929151884656820) - first DuraShare Challenge, where participants received three independent shares from a complete 3-of-5 DuraShare row (3 words plus checksum) and raced to recover it manually. [Andrew Poelstra](https://github.com/apoelstra) won in record time.
 
 ## People
 
